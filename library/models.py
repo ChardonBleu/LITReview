@@ -1,6 +1,7 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
 class Ticket(models.Model):
@@ -61,8 +62,19 @@ class Review(models.Model):
         return f"{self.headline} - created on {self.time_created} - related to ticket id {self.ticket}"
 
 
+class User(AbstractUser):
+    pass
+
+
 class UserFollows(models.Model):
     # Your UserFollows model definition goes here
+    """[summary]
+
+    Arguments:
+        models {[type]} -- [description]
+    """
+    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='following')
+    followed_user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='followed_by')
 
     class Meta:
         # ensures we don't get multiple UserFollows instances
