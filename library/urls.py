@@ -6,6 +6,6 @@ app_name = 'library'
 
 urlpatterns = [
     path('', views.log_in, name="log_in"),
-    path('register/', views.register, name="registration")
+    path('register/', views.register, name="register")
 
 ]

@@ -12,4 +12,9 @@ def log_in(request):
 
 
 def register(request):
-    pass
+    """
+    Arguments:
+        request {[type]} -- [description]
+    """
+    # instructs
+    return render(request, 'library/register.html', {})
