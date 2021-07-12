@@ -1,9 +1,16 @@
 {% extends 'main.html' %}
 {% block content %}
-    <p> On s'inscrit ici</p>
 
-    <a href="{% url 'library:log_in' %}">Retour</a>
-
-    
+    <form method="POST">
+        {% csrf_token %}
+        <div>
+            <p>Inscrivez-vous:</p>
+            {{ form.as_p }}
+        </div>
+        <div>
+            <a href="{% url 'library:log_in' %}">Retour</a> | 
+            <input type="submit" value="S'inscrire">
+        </div>
+    </form>
 
 {% endblock %}

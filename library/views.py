@@ -1,14 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from .forms import CustomUserCreationForm
 
 
-# Create your views here.
 def log_in(request):
     """
     Arguments:
         request {[type]} -- [description]
     """
-    # instructs
-    return render(request, 'library/log_in.html', {})
+
+    return render(request, 'library/log_in.html', context={})
 
 
 def register(request):
@@ -16,5 +16,12 @@ def register(request):
     Arguments:
         request {[type]} -- [description]
     """
-    # instructs
-    return render(request, 'library/register.html', {})
+    if request.method == "POST":
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('library:log_in')
+    else:
+        form = CustomUserCreationForm()
+
+    return render(request, 'library/register.html', context={"form": form})
