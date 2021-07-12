@@ -1,6 +1,7 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
 from django.db import models
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 
 
@@ -20,6 +21,9 @@ class Ticket(models.Model):
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     image = models.ImageField(null=True, blank=True)
     time_created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ('-time_created',)
 
     def __str__(self):
         """display the essentials of a ticket on one line
@@ -52,6 +56,9 @@ class Review(models.Model):
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     time_created = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ('-time_created',)
+
     def __str__(self):
         """display the essentials of a review on one line
 
@@ -63,11 +70,12 @@ class Review(models.Model):
 
 
 class User(AbstractUser):
+    """Custom user model
+    """
     pass
 
 
 class UserFollows(models.Model):
-    # Your UserFollows model definition goes here
     """[summary]
 
     Arguments:
@@ -83,3 +91,6 @@ class UserFollows(models.Model):
             "user",
             "followed_user",
         )
+
+    def __str__(self):
+        return f"id_user {self.user} follows id_user {self.followed_user}"
