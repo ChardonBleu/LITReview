@@ -1,5 +1,4 @@
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UsernameField
-from django.contrib.auth.views import LoginView
 
 from django import forms
 from .models import User
@@ -37,7 +36,3 @@ class CustomAuthenticationForm(AuthenticationForm):
         widget=forms.PasswordInput(attrs={'autocomplete': 'current-password',
                                           'placeholder': 'Mot de passe'})
     )
-
-
-class CustomLoginView(LoginView):
-    form_class = CustomAuthenticationForm

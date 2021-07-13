@@ -7,13 +7,17 @@
     </div>
 
     <div>
-        <form methode="POST">
-            {% csrf_token %}
-            <p>Connectez-vous<p>
-            {{ form.as_p }}
-            <input type="submit" value="Se connecter">
-        </form>  
-    </div>    
+        {% if user.is_authenticated %}
+            <p>Bonjour, {{ user.username }}. Vous êtes bien connecté.</p>
+        {% else %}
+            <div>
+            <form method="POST">
+                {% csrf_token %}
+                <p>Bienvenue. Connectez-vous<p>
+                {{ form.as_p }}
+                <input type="submit" value="Se connecter">
+            </form>  
+        {% endif %}
+    </div>
 
-    
 {% endblock %}

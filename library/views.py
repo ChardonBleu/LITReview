@@ -1,8 +1,14 @@
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView
 
-from .forms import CustomUserCreationForm
+
+from .forms import CustomUserCreationForm, CustomAuthenticationForm
+
+
+class CustomLoginView(LoginView):
+    form_class = CustomAuthenticationForm
 
 
 def register(request):
@@ -15,7 +21,7 @@ def register(request):
         if request.method == "POST":
             if form.is_valid():
                 form.save()
-                return redirect('library:log_in')
+                return redirect('library:login')
             else:
                 return HttpResponse("Formulaire invalide")
     else:
