@@ -7,8 +7,8 @@ from .views import CustomLoginView
 app_name = 'library'
 
 urlpatterns = [
-    path('', views.CustomLoginView.as_view(), name='login'),
+    path('', CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('register/', views.register, name="register"),
-    path('flux/', views.flux, name="flux"),
+    path('flow/', views.flow, name="flow"),
 ]

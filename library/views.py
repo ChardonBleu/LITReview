@@ -30,8 +30,8 @@ def register(request):
     return render(request, 'library/register.html', context={"form": form})
 
 
-@login_required()
-def flux(request):
+@login_required(login_url='/')
+def flow(request):
     """[summary]
 
     Arguments:
@@ -40,4 +40,4 @@ def flux(request):
     Returns:
         [type] -- [description]
     """
-    return render(request, 'library/flux.html', context={})
+    return render(request, 'library/flow.html', context={})

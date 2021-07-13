@@ -134,4 +134,4 @@ AUTH_USER_MODEL = "library.User"
 
 LOGOUT_REDIRECT_URL = '/'
 
-LOGIN_REDIRECT_URL = '/flux/'
+LOGIN_REDIRECT_URL = '/flow/'
