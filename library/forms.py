@@ -1,4 +1,6 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UsernameField
+from django.contrib.auth.views import LoginView
+
 from django import forms
 from .models import User
 
@@ -21,3 +23,21 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
+
+
+class CustomAuthenticationForm(AuthenticationForm):
+    """
+
+    """
+    username = UsernameField(widget=forms.TextInput(attrs={'autofocus': True,
+                                                           'placeholder': 'Utilisateur'}),
+                             label=(""))
+    password = forms.CharField(
+        label=(""),
+        widget=forms.PasswordInput(attrs={'autocomplete': 'current-password',
+                                          'placeholder': 'Mot de passe'})
+    )
+
+
+class CustomLoginView(LoginView):
+    form_class = CustomAuthenticationForm
