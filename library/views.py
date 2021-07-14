@@ -8,13 +8,18 @@ from .forms import CustomUserCreationForm, CustomAuthenticationForm
 
 
 class CustomLoginView(LoginView):
+    """
+    Custom login class using a custom authentication form.
+    """
     form_class = CustomAuthenticationForm
 
 
 def register(request):
     """
-    Arguments:
-        request {[type]} -- [description]
+    This view implements a form for registration.
+    After registration returns to the login page.
+
+    return: envoie le formulaire sur la page d'enregistrement.
     """
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)

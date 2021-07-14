@@ -75,10 +75,7 @@ class User(AbstractUser):
 
 
 class UserFollows(models.Model):
-    """[summary]
-
-    Arguments:
-        models {[type]} -- [description]
+    """Is used to memorize the users followed by a user
     """
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='following')
     followed_user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='followed_by')
