@@ -12,13 +12,13 @@
         
         <header>
             <div>
-                <img src="../library/static/library/images/logo.png"> </img>
+                <img src="../static/css/logo.png"> </img>
                 <h1>LITReview</h1>
                 <nav>
-                    <a>flux</a>
-                    <a>Posts</a>
-                    <a>Abonnements</a>
-                    <a>Se deconnecter</a>
+                    <a href="{% url 'library:flow' %}">flux</a> | 
+                    <a>Posts</a> | 
+                    <a>Abonnements</a> | 
+                    <a href="{% url 'library:logout' %}">Se deconnecter</a> | 
                 </nav>
             </div>      
         </header>
