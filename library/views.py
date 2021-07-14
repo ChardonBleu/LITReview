@@ -7,8 +7,7 @@ from django.contrib.auth.views import LoginView
 from django.db.models import CharField, Value
 
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
-from .models import Review, Ticket
-
+from .models import Review, Ticket, UserFollows
 
 class CustomLoginView(LoginView):
     """
@@ -39,6 +38,11 @@ def register(request):
 
 
 def get_users_viewable_reviews(request):
+    """[summary]
+
+    Returns:
+        [list] -- liste de résultats de requêtes annotées
+    """
     reviews = Review.objects.filter(user_id=request.id)
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
 
@@ -49,11 +53,36 @@ def get_users_viewable_reviews(request):
         reviews = sorted(chain(reviews, reviews_to_own_ticket),
                          key=lambda post: post.time_created,
                          reverse=True)
+
+    followed_users = UserFollows.objects.filter(user_id=request.id)
+    for followed in followed_users:
+        reviews_followed_users = Review.objects.filter(user_id=followed.followed_user.id)
+        reviews_followed_users = reviews_followed_users.annotate(content_type=Value('REVIEW', CharField()))
+        reviews = sorted(chain(reviews, reviews_followed_users),
+                         key=lambda post: post.time_created,
+                         reverse=True)
+
     return reviews
 
 
 def get_users_viewable_tickets(request):
+    """[summary]
+
+
+    Returns:
+        [type] -- [description]
+    """
     tickets = Ticket.objects.filter(user_id=request.id)
+    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+
+    followed_users = UserFollows.objects.filter(user_id=request.id)
+    for followed in followed_users:
+        tickets_followed_users = Ticket.objects.filter(user_id=followed.followed_user.id)
+        tickets_followed_users = tickets_followed_users.annotate(content_type=Value('TICKET', CharField()))
+        tickets = sorted(chain(tickets, tickets_followed_users),
+                         key=lambda post: post.time_created,
+                         reverse=True)
+
     return tickets
 
 
@@ -68,9 +97,7 @@ def flow(request):
         [type] -- [description]
     """
     reviews = get_users_viewable_reviews(request.user)
-
     tickets = get_users_viewable_tickets(request.user)
-    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
 
     posts = sorted(chain(reviews, tickets),
                    key=lambda post: post.time_created,
