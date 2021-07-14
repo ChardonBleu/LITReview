@@ -19,7 +19,9 @@
                     <a>Posts</a> | 
                     <a>Abonnements</a> | 
                     <a href="{% url 'library:logout' %}">Se deconnecter</a> | 
-                    <span>Compte de {{ user.get_username }}</span>
+                    {% if user.is_authenticated %}
+                        <span>Compte de {{ user.get_username }}</span>
+                    {% endif %}
                 </nav>
                 
             </div>      

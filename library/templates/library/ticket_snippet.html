@@ -2,7 +2,14 @@
 <div>
     <p>***************************************</p>
     <div>
-        <span>{{post.user.username}} a demandé une critique</span>
+        <span>
+            {% if user.get_username == post.user.username %}
+                Vous avez 
+            {% else %}
+                {{post.user.username}} a 
+            {% endif %}
+            demandé une critique
+        </span>
         <span>{{post.time_created|time:"H:i" }} {{post.time_created|date:"d F Y" }}</span>
     </div>
 
