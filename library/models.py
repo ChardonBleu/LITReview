@@ -89,4 +89,4 @@ class UserFollows(models.Model):
         )
 
     def __str__(self):
-        return f"id_user {self.user} follows id_user {self.followed_user}"
+        return f"{self.user.username.upper()} follows {self.followed_user.username.upper()}"

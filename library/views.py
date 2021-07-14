@@ -40,9 +40,15 @@ def register(request):
 
 def get_users_viewable_reviews(request):
     reviews = Review.objects.filter(user_id=request.id)
+    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+
     own_tickets = Ticket.objects.filter(user_id=request.id)
     for ticket in own_tickets:
-        reviews += ticket.review.all()
+        reviews_to_own_ticket = Review.objects.filter(ticket_id=ticket.id)
+        reviews_to_own_ticket = reviews_to_own_ticket.annotate(content_type=Value('REVIEW', CharField()))
+        reviews = sorted(chain(reviews, reviews_to_own_ticket),
+                         key=lambda post: post.time_created,
+                         reverse=True)
     return reviews
 
 
@@ -62,7 +68,6 @@ def flow(request):
         [type] -- [description]
     """
     reviews = get_users_viewable_reviews(request.user)
-    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
 
     tickets = get_users_viewable_tickets(request.user)
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
