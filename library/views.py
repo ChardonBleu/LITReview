@@ -5,6 +5,7 @@ from django.contrib.auth.views import LoginView
 
 
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
+from .models import Review, Ticket, User
 
 
 class CustomLoginView(LoginView):
@@ -45,4 +46,10 @@ def flow(request):
     Returns:
         [type] -- [description]
     """
-    return render(request, 'library/flow.html', context={})
+    all_reviews = Review.objects.all()
+    all_tickets = Ticket.objects.all()
+    context = {'all_reviews': all_reviews,
+               'all_tickets': all_tickets
+               }
+
+    return render(request, 'library/flow.html', context)
