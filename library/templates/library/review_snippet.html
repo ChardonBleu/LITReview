@@ -1,0 +1,27 @@
+
+<div>
+    <p>********************************************</p>
+    <div>
+        <span>{{post.user.username}} avez publié une critique</span>
+        <span>{{post.time_created|time:"H:i" }} {{post.time_created|date:"d F Y" }}</span>
+    </div>
+
+    <div>
+        <p>{{ post.headline }} - {{ post.rating }}</p>
+        <p>{{ post.body }}</p>
+    </div>
+    <div>
+        <p>_________________________________________</p>
+
+        <p>Ticket - {{post.ticket.user.username}}</p>
+
+        <p>{{post.ticket.title}}</p>
+                    
+        {% if post.ticket.image %}
+            <div><img src="{{post.ticket.image.url}}" alt="{{post.ticket.title}}"></img></div>
+                        
+            {% endif %}
+                    
+        <p>***************************************</p>
+    </div>
+</div>

@@ -1,11 +1,13 @@
+from itertools import chain
+
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-
+from django.db.models import CharField, Value
 
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
-from .models import Review, Ticket, User
+from .models import Review, Ticket
 
 
 class CustomLoginView(LoginView):
@@ -36,6 +38,19 @@ def register(request):
     return render(request, 'library/register.html', context={"form": form})
 
 
+def get_users_viewable_reviews(request):
+    reviews = Review.objects.filter(user_id=request.id)
+    own_tickets = Ticket.objects.filter(user_id=request.id)
+    for ticket in own_tickets:
+        reviews += ticket.review.all()
+    return reviews
+
+
+def get_users_viewable_tickets(request):
+    tickets = Ticket.objects.filter(user_id=request.id)
+    return tickets
+
+
 @login_required(login_url='/')
 def flow(request):
     """[summary]
@@ -46,10 +61,15 @@ def flow(request):
     Returns:
         [type] -- [description]
     """
-    all_reviews = Review.objects.all()
-    all_tickets = Ticket.objects.all()
-    context = {'all_reviews': all_reviews,
-               'all_tickets': all_tickets
-               }
+    reviews = get_users_viewable_reviews(request.user)
+    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+
+    tickets = get_users_viewable_tickets(request.user)
+    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+
+    posts = sorted(chain(reviews, tickets),
+                   key=lambda post: post.time_created,
+                   reverse=True)
+    context = {'posts': posts}
 
     return render(request, 'library/flow.html', context)

@@ -1,0 +1,18 @@
+
+<div>
+    <p>***************************************</p>
+    <div>
+        <span>{{post.user.username}} a demandé une critique</span>
+        <span>{{post.time_created|time:"H:i" }} {{post.time_created|date:"d F Y" }}</span>
+    </div>
+
+    <p>{{post.title}}</p>
+    <p>{{post.description}}</p>
+                
+    {% if post.image %}
+        <div><img src="{{post.image.url}}" alt="{{post.title}}"></img></div>
+                    
+    {% endif %}
+                
+    <p>***************************************</p>
+</div>

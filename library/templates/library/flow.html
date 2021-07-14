@@ -1,25 +1,15 @@
 {% extends 'main.html' %}
 {% block content %}
     <div>
-        {% for ticket in all_tickets %}
-            <div>
-                <p>***************************************</p>
-                <div>
-                    <span>{{ticket.user.username}} a demandé une critique</span>
-                    <span>{{ticket.time_created|time:"H:i" }} {{ticket.time_created|date:"d F Y" }}</span>
-                </div>
 
-                <p>{{ticket.title}}</p>
-                <p>{{ticket.description}}</p>
-                
-                {% if ticket.image %}
-                    <div><img src="{{ticket.image.url}}" alt="{{ticket.title}}"></img></div>
-                    
-                {% endif %}
-                
-                <p>***************************************</p>
-            </div>
+        {% for post in posts %}
+            {% if post.content_type == 'TICKET' %}
+                {% include 'library/ticket_snippet.html' %}
+            {% elif post.content_type == 'REVIEW' %}
+                {% include 'library/review_snippet.html' %}
+            {% endif %}
         {% endfor %}
+
     </div>
 
 {% endblock %}
