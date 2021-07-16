@@ -9,6 +9,7 @@ from django.db.models import CharField, Value
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
 from .models import Review, Ticket, UserFollows
 
+
 class CustomLoginView(LoginView):
     """
     Custom login class using a custom authentication form.
