@@ -6,11 +6,11 @@
             {% if user.get_username == post.user.username %}
                 Vous avez 
             {% else %}
-                {{post.user.username}} a 
+                {{ post.user.username }} a 
             {% endif %}
             publié une critique
         </span>
-        <span>{{post.datetime_created|time:"H:i" }} {{post.datetime_created|date:"d F Y" }}</span>
+        <span>{{ post.datetime_created|time:"H:i" }} {{ post.datetime_created|date:"d F Y" }}</span>
     </div>
 
     <div>
@@ -20,12 +20,12 @@
     <div>
         <p>_________________________________________</p>
 
-        <p>Ticket - {{post.ticket.user.username}}</p>
+        <p>Ticket - {{ post.ticket.user.username }}</p>
 
-        <p>{{post.ticket.title}}</p>
+        <p>{{ post.ticket.title }}</p>
                     
         {% if post.ticket.image %}
-            <div><img src="{{post.ticket.image.url}}" alt="{{post.ticket.title}}"></img></div>
+            <div><img src="{{ post.ticket.image.url }}" alt="{{ post.ticket.title }}"></img></div>
                         
             {% endif %}
                     

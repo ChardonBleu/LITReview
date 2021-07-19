@@ -25,7 +25,8 @@ class Ticket(models.Model):
     image = models.ImageField(
         null=True,
         blank=True,
-        help_text=_("Each ticket can have an image. It can be blank."))
+        help_text=_("Each ticket can have an image. It can be blank."),
+        upload_to='library')
     datetime_created = models.DateTimeField(
         auto_now_add=True,
         help_text=_("ticket creation date is automatically filled in."))
