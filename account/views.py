@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView
 
 from .forms import CustomAuthenticationForm, CustomUserCreationForm
-from .models import User
 
 
 class CustomLoginView(LoginView):
@@ -25,10 +24,10 @@ def register(request):
         if request.method == "POST":
             if form.is_valid():
                 form.save()
-                return redirect('library:login')
+                return redirect('account:login')
             else:
                 return HttpResponse("Formulaire invalide")
     else:
         form = CustomUserCreationForm()
 
-    return render(request, 'library/register.html', context={"form": form})
+    return render(request, 'account/register.html', context={"form": form})
