@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'account',
     'library',
 ]
 
@@ -132,7 +133,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "LITReview/static/images")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = "library.User"
+AUTH_USER_MODEL = "account.User"
 
 LOGOUT_REDIRECT_URL = '/'
 
