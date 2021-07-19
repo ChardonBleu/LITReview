@@ -19,12 +19,21 @@ class UserViewTests(TestCase):
         self.other_user = User.objects.create(username="other_user_test", password="other_user")
         self.client = Client()
 
-    def test_login(self):
+    def test_urls(self):
         """[summary]
         """
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         print("page acceuil OK")
+
         response = self.client.get(reverse('library:register'))
         self.assertEqual(response.status_code, 200)
         print("page inscription OK")
+
+        response = self.client.get(reverse('library:logout'))
+        self.assertEqual(response.status_code, 302)
+        print("page logout OK")
+
+        response = self.client.get(reverse('library:flow'))
+        self.assertEqual(response.status_code, 302)
+        print("page flow OK")
