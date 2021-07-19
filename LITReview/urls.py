@@ -20,5 +20,6 @@ from django.urls.conf import include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('library.urls', namespace='library')),
+    path('flow/', include('library.urls', namespace='library')),
+    path('', include('account.urls', namespace='account')),
 ]
