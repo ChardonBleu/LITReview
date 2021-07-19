@@ -2,7 +2,6 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 
 
 class Ticket(models.Model):
@@ -88,12 +87,6 @@ class Review(models.Model):
         """
 
         return f"{self.headline} - created on {self.datetime_created} - related to ticket id {self.ticket}"
-
-
-class User(AbstractUser):
-    """Custom user model
-    """
-    pass
 
 
 class UserFollows(models.Model):
