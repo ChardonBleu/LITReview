@@ -24,3 +24,7 @@ class UserViewTests(TestCase):
         """
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
+        print("page acceuil OK")
+        response = self.client.get(reverse('library:register'))
+        self.assertEqual(response.status_code, 200)
+        print("page inscription OK")
