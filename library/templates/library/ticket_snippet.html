@@ -6,18 +6,20 @@
             {% if user.get_username == post.user.username %}
                 Vous avez 
             {% else %}
-                {{post.user.username}} a 
+                {{ post.user.username }} a 
             {% endif %}
             demandé une critique
         </span>
-        <span>{{post.datetime_created|time:"H:i" }} {{post.datetime_created|date:"d F Y" }}</span>
+        <span>{{ post.datetime_created|time:"H:i" }} {{ post.datetime_created|date:"d F Y" }}</span>
     </div>
 
     <p>{{post.title}}</p>
     <p>{{post.description}}</p>
                 
     {% if post.image %}
-        <div><img src="{{post.image.url}}" alt="{{post.title}}"></img></div>
+
+        <div>
+        <img src="{{ post.image.url }}" alt="{{ post.title }}"></img></div>
                     
     {% endif %}
                 
