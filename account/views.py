@@ -12,12 +12,10 @@ class CustomLoginView(LoginView):
     form_class = CustomAuthenticationForm
 
 
-def register(request):
+def register(request) -> HttpResponse:
     """
     This view implements a form for registration.
     After registration returns to the login page.
-
-    return: envoie le formulaire sur la page d'enregistrement.
     """
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)

@@ -1,6 +1,10 @@
+
+from itertools import chain
+
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
+
 from django.db import models
 
 
@@ -80,14 +84,14 @@ class Review(models.Model):
     class Meta:
         ordering = ('-datetime_created',)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """display the essentials of a review on one line
 
         Returns:
             [string] -- review title, creation date and related ticket id
         """
 
-        return f"{self.headline} - created on {self.datetime_created} - related to ticket id {self.ticket}"
+        return f"{self.headline} - created on {self.datetime_created} - related to ticket {self.ticket.title}"
 
 
 class UserFollows(models.Model):
@@ -105,12 +109,18 @@ class UserFollows(models.Model):
         help_text=_(""))
 
     class Meta:
-        # ensures we don't get multiple UserFollows instances
-        # for unique user-user_followed pairs
+        """ Ensures we don't get multiple UserFollows instances
+            for unique user-user_followed pairs
+        """
         unique_together = (
             "user",
             "followed_user",
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """display the essentials of user following and followers on one line
+
+        Returns:
+            [string] -- user1 follows user2
+        """
         return f"{self.user.username.upper()} follows {self.followed_user.username.upper()}"

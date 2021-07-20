@@ -26,11 +26,11 @@ class UserViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         print("page acceuil OK")
 
-        response = self.client.get(reverse('library:register'))
+        response = self.client.get(reverse('account:register'))
         self.assertEqual(response.status_code, 200)
         print("page inscription OK")
 
-        response = self.client.get(reverse('library:logout'))
+        response = self.client.get(reverse('account:logout'))
         self.assertEqual(response.status_code, 302)
         print("page logout OK")
 
