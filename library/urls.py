@@ -1,5 +1,6 @@
 from django.urls import path
 from django.conf.urls.static import static
+from django.urls.conf import include
 
 from library import views
 from LITReview import settings
@@ -8,7 +9,8 @@ from LITReview import settings
 app_name = 'library'
 
 urlpatterns = [
-    path('', views.flow, name="flow"),
+    path('flow/', views.flow, name="flow"),
+    path('', include('account.urls', namespace='account'))
 ]
 
 if settings.DEBUG:
