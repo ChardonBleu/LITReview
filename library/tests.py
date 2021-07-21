@@ -15,8 +15,6 @@ class UserViewTests(TestCase):
     def setUp(self):
         """[summary]
         """
-        self.current_user = User.objects.create(username='current_user_test', password='user_test')
-        self.other_user = User.objects.create(username="other_user_test", password="other_user")
         self.client = Client()
 
     def test_urls(self):

@@ -34,5 +34,8 @@ class UserViewTests(TestCase):
         self.assertEqual(response.status_code, 302)
         print("page logout OK")
 
-
-
+    def test_registration(self):
+        response = self.client.post('/register/', {'username': 'toto', 'password': 'navet'})
+        user_registered = User.objects.get(id=1)
+        print(user_registered)
+        self.assertEqual(response.status_code, 200)
