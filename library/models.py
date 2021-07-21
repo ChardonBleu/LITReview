@@ -1,7 +1,25 @@
+
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
+from django.db.models import CharField, Value
+from django.db.models import Q
+from itertools import chain
+
 from django.db import models
+
+
+class TicketManager(models.Manager):
+    def get_users_viewable_tickets(self, request):
+        tickets = self.filter(Q(user=request.user))
+        tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+
+        tickets2 = self.filter(Q(user__followed_by__user=request.user))
+        tickets2 = tickets2.annotate(content_type=Value('TICKET', CharField()))
+        tickets = sorted(chain(tickets, tickets2),
+                         key=lambda post: post.datetime_created,
+                         reverse=True)
+        return tickets
 
 
 class Ticket(models.Model):
@@ -31,6 +49,8 @@ class Ticket(models.Model):
         auto_now_add=True,
         help_text=_("ticket creation date is automatically filled in."))
 
+    objects = TicketManager()
+
     class Meta:
         ordering = ('-datetime_created',)
 
@@ -40,8 +60,23 @@ class Ticket(models.Model):
         Returns:
             [string] -- ticket title, creation date and related user id
         """
-        return f"{self.title} - created on {self.datetime_created} - related to ticket id {self.user}"
+        return f"{self.title} - by {self.user}"
 
+
+class ReviewManager(models.Manager):
+    def get_users_viewable_reviews(self, request):
+        reviews = Review.objects.filter(Q(user=request.user))
+        reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+
+        reviews2 = Review.objects.filter(Q(ticket__user=request.user)).exclude(Q(user=request.user))
+        reviews2 = reviews2.annotate(content_type=Value('REVIEW', CharField()))
+
+        reviews3 = Review.objects.filter(Q(user__followed_by__user=request.user)).exclude(Q(ticket__user=request.user))
+        reviews3 = reviews3.annotate(content_type=Value('REVIEW', CharField()))
+        reviews = sorted(chain(reviews, reviews2, reviews3),
+                         key=lambda post: post.datetime_created,
+                         reverse=True)
+        return reviews
 
 class Review(models.Model):
     """Reviews for books or articles.
@@ -77,17 +112,19 @@ class Review(models.Model):
         help_text=_("Each review is related tu a user. If the user is deleted,\
             the review is deleted."))
 
+    objects = ReviewManager()
+
     class Meta:
         ordering = ('-datetime_created',)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """display the essentials of a review on one line
 
         Returns:
             [string] -- review title, creation date and related ticket id
         """
 
-        return f"{self.headline} - created on {self.datetime_created} - related to ticket id {self.ticket}"
+        return f"{self.headline} - by {self.user} - related to ticket {self.ticket.title}"
 
 
 class UserFollows(models.Model):
@@ -105,12 +142,18 @@ class UserFollows(models.Model):
         help_text=_(""))
 
     class Meta:
-        # ensures we don't get multiple UserFollows instances
-        # for unique user-user_followed pairs
+        """ Ensures we don't get multiple UserFollows instances
+            for unique user-user_followed pairs
+        """
         unique_together = (
             "user",
             "followed_user",
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """display the essentials of user following and followers on one line
+
+        Returns:
+            [string] -- user1 follows user2
+        """
         return f"{self.user.username.upper()} follows {self.followed_user.username.upper()}"
