@@ -8,20 +8,6 @@ class CustomUserCreationForm(UserCreationForm):
     """
     personalized registration form with placeholders instead of labels
     """
-    username = forms.CharField(
-        label=(""),
-        widget=forms.TextInput(attrs={'placeholder': 'Utilisateur'}),
-    )
-    password1 = forms.CharField(
-        label=(""),
-        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password',
-                                          'placeholder': 'Mot de passe'}),
-    )
-    password2 = forms.CharField(
-        label=(""),
-        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password',
-                                          'placeholder': 'Confirmer mot de passe'}),
-    )
 
     class Meta(UserCreationForm.Meta):
         """
@@ -30,16 +16,37 @@ class CustomUserCreationForm(UserCreationForm):
         """
         model = User
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].label = ""
+        self.fields['username'].help_text = ""
+        self.fields['username'].widget.attrs.update({'autofocus': True,
+                                                     'placeholder': 'Utilisateur'})
+
+        self.fields['password1'].label = ""
+        self.fields['password1'].help_text = ""
+        self.fields['password1'].widget.attrs.update({'autocomplete': 'new-password',
+                                                      'placeholder': 'Mot de passe'})
+
+        self.fields['password2'].label = ""
+        self.fields['password2'].help_text = ""
+        self.fields['password2'].widget.attrs.update({'autocomplete': 'new-password',
+                                                     'placeholder': 'Confirmer mot de passe'})
+
 
 class CustomAuthenticationForm(AuthenticationForm):
     """
     personalized authentication form with placeholders instead of labels
     """
-    username = UsernameField(widget=forms.TextInput(attrs={'autofocus': True,
-                                                           'placeholder': 'Utilisateur'}),
-                             label=(""))
-    password = forms.CharField(
-        label=(""),
-        widget=forms.PasswordInput(attrs={'autocomplete': 'current-password',
-                                          'placeholder': 'Mot de passe'})
-    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].label = ""
+        self.fields['username'].help_text = ""
+        self.fields['username'].widget.attrs.update({'autofocus': True,
+                                                     'placeholder': 'Utilisateur'})
+
+        self.fields['password'].label = ""
+        self.fields['password'].help_text = ""
+        self.fields['password'].widget.attrs.update({'autocomplete': 'new-password',
+                                                     'placeholder': 'Mot de passe'})
