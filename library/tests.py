@@ -1,39 +1,47 @@
-from django.test import TestCase
+import pytest
 from django.urls import reverse
 from django.test import Client
-from .models import User
+from library.models import Ticket, Review, UserFollows
+from account.models import User
 
 
-# Create your tests here.
-class UserViewTests(TestCase):
-    """[summary]
-
-    Arguments:
-        TestCase {[type]} -- [description]
+class TestLibrary:
+    """
     """
 
-    def setUp(self):
-        """[summary]
-        """
-        self.current_user = User.objects.create(username='current_user_test', password='user_test')
-        self.other_user = User.objects.create(username="other_user_test", password="other_user")
+    def setup(self) -> None:
         self.client = Client()
 
-    def test_urls(self):
-        """[summary]
-        """
-        response = self.client.get('/')
-        self.assertEqual(response.status_code, 200)
-        print("page acceuil OK")
-
-        response = self.client.get(reverse('account:register'))
-        self.assertEqual(response.status_code, 200)
-        print("page inscription OK")
-
-        response = self.client.get(reverse('account:logout'))
-        self.assertEqual(response.status_code, 302)
-        print("page logout OK")
-
+    def test_urls(self) -> None:
         response = self.client.get(reverse('library:flow'))
-        self.assertEqual(response.status_code, 302)
-        print("page flow OK")
+        assert response.status_code == 302
+
+    @pytest.fixture
+    def user_ticket(self, db) -> User:
+        return User.objects.create_user(username='moi', password='mon_password_test')
+
+    @pytest.fixture
+    def other_user(self, db) -> User:
+        return User.objects.create_user(username='lautre', password='password_autre_test')
+
+    @pytest.fixture
+    def one_ticket(self, db, user_ticket: User) -> Ticket:
+        return Ticket.objects.create(title='Mon livre préféré', user=user_ticket)
+
+    @pytest.fixture
+    def user_ticket_follows_other_user(self, db, user_ticket: User, other_user: User) -> UserFollows:
+        return UserFollows.objects.create(user=user_ticket, followed_user=other_user)
+
+    @pytest.mark.django_db
+    def test_str_tickets(self, db, one_ticket: Ticket) -> None:
+        assert str(one_ticket) == 'Mon livre préféré - by moi'
+
+    @pytest.mark.django_db
+    def test_str_review(self, db, other_user: User, one_ticket: Ticket) -> None:
+        Review.objects.create(ticket=one_ticket, rating=3, headline='Bon livre', user=other_user)
+        review = Review.objects.get(id=1)
+        assert str(review) == 'Bon livre - by lautre - related to ticket Mon livre préféré'
+
+    @pytest.mark.django_db
+    def test_str_userfollows(self, db, user_ticket_follows_other_user: UserFollows) -> None:
+        assert str(user_ticket_follows_other_user) == 'MOI follows LAUTRE'

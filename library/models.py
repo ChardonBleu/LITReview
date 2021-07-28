@@ -3,7 +3,6 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.db.models import CharField, Value
-from django.db.models import Q
 from itertools import chain
 
 from django.db import models
@@ -11,14 +10,20 @@ from django.db import models
 
 class TicketManager(models.Manager):
     def get_users_viewable_tickets(self, request):
-        tickets = self.filter(Q(user=request.user))
-        tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+        """Select tickets for the flow page
 
-        tickets2 = self.filter(Q(user__followed_by__user=request.user))
-        tickets2 = tickets2.annotate(content_type=Value('TICKET', CharField()))
-        tickets = sorted(chain(tickets, tickets2),
+        Returns:
+            [iterable object] -- regroup all query results in one single list
+        """
+        tickets_user = self.filter(user=request.user)
+        tickets_user = tickets_user.annotate(content_type=Value('TICKET', CharField()))
+
+        tickets_followed_user = self.filter(user__followed_by__user=request.user)
+        tickets_followed_user = tickets_followed_user.annotate(content_type=Value('TICKET', CharField()))
+        tickets = sorted(chain(tickets_user, tickets_followed_user),
                          key=lambda post: post.datetime_created,
                          reverse=True)
+
         return tickets
 
 
@@ -65,18 +70,21 @@ class Ticket(models.Model):
 
 class ReviewManager(models.Manager):
     def get_users_viewable_reviews(self, request):
-        reviews = Review.objects.filter(Q(user=request.user))
-        reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+        """Select reviews for the flow page
 
-        reviews2 = Review.objects.filter(Q(ticket__user=request.user)).exclude(Q(user=request.user))
-        reviews2 = reviews2.annotate(content_type=Value('REVIEW', CharField()))
+        Returns:
+            [iterable object] -- regroup all query results in one single list
+        """
+        reviews_user = Review.objects.filter(user=request.user)
+        reviews_user = reviews_user.annotate(content_type=Value('REVIEW', CharField()))
 
-        reviews3 = Review.objects.filter(Q(user__followed_by__user=request.user)).exclude(Q(ticket__user=request.user))
-        reviews3 = reviews3.annotate(content_type=Value('REVIEW', CharField()))
-        reviews = sorted(chain(reviews, reviews2, reviews3),
+        reviews_followed_user = Review.objects.filter(user__followed_by__user=request.user)
+        reviews_followed_user = reviews_followed_user.annotate(content_type=Value('REVIEW', CharField()))
+        reviews = sorted(chain(reviews_user, reviews_followed_user),
                          key=lambda post: post.datetime_created,
                          reverse=True)
         return reviews
+
 
 class Review(models.Model):
     """Reviews for books or articles.

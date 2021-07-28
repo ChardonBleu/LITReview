@@ -19,12 +19,11 @@ def register(request) -> HttpResponse:
     """
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
-        if request.method == "POST":
-            if form.is_valid():
-                form.save()
-                return redirect('account:login')
-            else:
-                return HttpResponse("Formulaire invalide")
+        if form.is_valid():
+            form.save()
+            return redirect('account:login')
+        else:
+            return HttpResponse("Formulaire invalide")
     else:
         form = CustomUserCreationForm()
 
