@@ -23,3 +23,12 @@ class UserViewTests(TestCase):
         response = self.client.get(reverse('library:flow'))
         self.assertEqual(response.status_code, 302)
         print("page flow OK")
+
+    def test_flow_view(self):
+        pass
+
+    def test_ticket_manager(self):
+        pass
+
+    def test_review_manager(self):
+        pass

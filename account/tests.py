@@ -1,11 +1,15 @@
+import pytest
 from django.test import TestCase
 from django.urls import reverse
 from django.test import Client
+
+from django.http.response import HttpResponse
+
 from .models import User
 
 
 # Create your tests here.
-class UserViewTests(TestCase):
+class TestUserView(TestCase):
     """[summary]
 
     Arguments:
@@ -36,6 +40,7 @@ class UserViewTests(TestCase):
 
     def test_registration(self):
         response = self.client.post('/register/', {'username': 'toto', 'password': 'navet'})
+        response.save()
         user_registered = User.objects.get(id=1)
         print(user_registered)
         self.assertEqual(response.status_code, 200)
