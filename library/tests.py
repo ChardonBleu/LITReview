@@ -1,18 +1,18 @@
-from django.test import TestCase
+import pytest
 from django.urls import reverse
 from django.test import Client
 from account.models import User
 
 
 # Create your tests here.
-class UserViewTests(TestCase):
+class TestUserView:
     """[summary]
 
     Arguments:
         TestCase {[type]} -- [description]
     """
 
-    def setUp(self):
+    def setup(self):
         """[summary]
         """
         self.client = Client()
@@ -21,8 +21,7 @@ class UserViewTests(TestCase):
         """[summary]
         """
         response = self.client.get(reverse('library:flow'))
-        self.assertEqual(response.status_code, 302)
-        print("page flow OK")
+        assert response.status_code == 302
 
     def test_flow_view(self):
         pass
