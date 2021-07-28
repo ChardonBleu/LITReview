@@ -4,22 +4,20 @@ from django.urls import reverse
 from django.test import Client
 
 from .models import User
+from .forms import CustomUserCreationForm
 
 
 # Create your tests here.
 class TestUserView:
-    """[summary]
 
-    Arguments:
-        TestCase {[type]} -- [description]
-    """
-
-    def setup(self):
+    def setup(self) -> None:
         """[summary]
         """
         self.client = Client()
+        self.username = 'azalae_test'
+        self.password = 'choucroute_test'
 
-    def test_urls(self):
+    def test_urls(self) -> None:
         """[summary]
         """
         response = self.client.get('/')
@@ -32,17 +30,17 @@ class TestUserView:
         assert response.status_code == 302
 
     @pytest.mark.django_db
-    def test_unauthorized_user_on_admin(self):
+    def test_unauthorized_user_on_admin(self) -> None:
         response = self.client.get('/admin/')
         assert response.status_code == 302
 
     @pytest.mark.django_db
-    def test_superuser_on_admin(self, admin_client):
+    def test_superuser_on_admin(self, admin_client) -> None:
         response = admin_client.get('/admin/')
         assert response.status_code == 200
 
     @pytest.fixture
-    def test_password(self):
+    def test_password(self) -> str:
         return 'test-pass'
 
     @pytest.fixture
@@ -64,13 +62,37 @@ class TestUserView:
         return make_auto_login
 
     @pytest.mark.django_db
-    def test_auth_view(self, auto_login_user):
+    def test_auth_view(self, auto_login_user) -> None:
         client, user = auto_login_user()
         url = reverse('library:flow')
         response = client.get(url)
         assert response.status_code == 200
 
     @pytest.mark.django_db
-    def test_registration(self):
-        User.objects.create_user('toto', 'zeropluszero')
+    def test_registration(self) -> None:
+        response = self.client.post(reverse('account:register'), data={
+            'username': self.username,
+            'password1': self.password,
+            'password2': self.password
+        })
+        assert response.status_code == 302
         assert User.objects.count() == 1
+
+    @pytest.mark.django_db
+    def test_invalid_form(self) -> None:
+        form_data = {
+            'username': self.username,
+            'password1': self.password,
+            'password2': ' '
+        }
+        form = CustomUserCreationForm(data=form_data)
+        assert not form.is_valid()
+
+    @pytest.mark.django_db
+    def test_response_invalid(self) -> None:
+        response = self.client.post(reverse('account:register'), data={
+            'username': self.username,
+            'password1': self.password,
+            'password2': ' '
+        })
+        assert response.content == b'Formulaire invalide'
