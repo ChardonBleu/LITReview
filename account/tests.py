@@ -70,13 +70,14 @@ class TestUserView:
 
     @pytest.mark.django_db
     def test_registration(self) -> None:
+        user_count = User.objects.count()
         response = self.client.post(reverse('account:register'), data={
             'username': self.username,
             'password1': self.password,
             'password2': self.password
         })
         assert response.status_code == 302
-        assert User.objects.count() == 1
+        assert User.objects.count() == user_count + 1
 
     @pytest.mark.django_db
     def test_invalid_form(self) -> None:
