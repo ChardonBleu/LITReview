@@ -5,7 +5,6 @@ omit =
   *settings*,
   *asgi.py,
   *__init__.py
-
   *wsgi.py,
   manage.py
   env*,

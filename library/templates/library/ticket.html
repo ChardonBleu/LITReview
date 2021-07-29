@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div>
+        <p>Créer un ticket</p>
+    </div>
+
+    <div>
+        {% if user.is_authenticated %}
+            <div>
+            <form method="POST">
+                {% csrf_token %}
+                <div>
+                    {{ form.as_p }}
+                </div>
+                <div>
+                    <input type="submit" value="Envoyer">
+                </div>
+            </form>
+            <div>
+        {% else %}
+            <div>
+                <p>Vous devez être connecté</p>
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}
