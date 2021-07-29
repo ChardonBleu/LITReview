@@ -15,6 +15,12 @@ class TestLibrary:
     def test_urls(self) -> None:
         response = self.client.get(reverse('library:flow'))
         assert response.status_code == 302
+        
+        response = self.client.get(reverse('library:ticket_creation'))
+        assert response.status_code == 302
+        
+        response = self.client.get(reverse('library:review_creation'))
+        assert response.status_code == 302
 
     @pytest.fixture
     def user_ticket(self, db) -> User:
@@ -45,3 +51,13 @@ class TestLibrary:
     @pytest.mark.django_db
     def test_str_userfollows(self, db, user_ticket_follows_other_user: UserFollows) -> None:
         assert str(user_ticket_follows_other_user) == 'MOI follows LAUTRE'
+    
+    @pytest.mark.django_db
+    def test_new_ticket(self) -> None:
+        response = self.client.post(reverse('library:ticket_creation'), data={
+            'title': 'new book',
+            'description': 'quel beau livre'
+        })
+        print(response.content)
+        assert response.status_code == 302
+        # assert Ticket.objects.count() == 1

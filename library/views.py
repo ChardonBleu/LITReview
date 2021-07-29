@@ -28,17 +28,18 @@ def ticket_creation(request) -> HttpResponse:
     """group all tickets and  review for flow.
     """
     if request.method == "POST":
-        form = TicketCreationForm(request.POST)
+        form = TicketCreationForm(request.POST, request.FILES)
         if form.is_valid():
-            # Créer instance de Ticket et la remplir avec le user connecté
-            # et avec le contenu du formulaire
-            # Sauver ce ticket dans la bdd
+            ticket = Ticket(title=form.cleaned_data['title'],
+                            description=form.cleaned_data['description'],
+                            user=request.user,
+                            image=form.cleaned_data['image'])
+            ticket.save()
             return redirect('library:flow')
         else:
             return HttpResponse("Formulaire invalide")
     else:
         form = TicketCreationForm()
-
     return render(request, 'library/ticket.html', context={"form": form})
 
 @login_required(login_url='/')

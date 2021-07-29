@@ -7,15 +7,31 @@
 
     <div>
         {% if user.is_authenticated %}
+
             <div>
-            <form method="POST">
+            {% if form.is_multipart %}
+                <form enctype="multipart/form-data" method="post">
+            {% else %}
+                <form method="post">
+            {% endif %}
                 {% csrf_token %}
+
+                {{ form.non_field_errors }}
                 <div>
-                    {{ form.as_p }}
+                    <p>{{ form.title.label }} {{ form.title.errors }}</p>                    
+                    <p>{{ form.title }}</p>
+
+                    <p>{{ form.description.label }} {{ form.description.errors }}</p>                    
+                    <p>{{ form.description }}</p>
+
+                    <p>{{ form.image.label }} {{ form.image.errors }}</p>                    
+                    <p>{{ form.image }}</p>
                 </div>
+
                 <div>
                     <input type="submit" value="Envoyer">
                 </div>
+
             </form>
             <div>
         {% endif %}
