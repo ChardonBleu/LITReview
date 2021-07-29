@@ -10,7 +10,9 @@ app_name = 'library'
 
 urlpatterns = [
     path('flow/', views.flow, name="flow"),
-    path('', include('account.urls', namespace='account'))
+    path('', include('account.urls', namespace='account')),
+    path('ticket/', views.ticket_creation, name="ticket_creation"),
+    path('review/', views.review_creation, name="review_creation"),
 ]
 
 if settings.DEBUG:

@@ -1,10 +1,11 @@
 from itertools import chain
 from django.http.response import HttpResponse
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
 from .models import Review, Ticket
+from .forms import TicketCreationForm
 
 
 @login_required(login_url='/')
@@ -21,3 +22,28 @@ def flow(request) -> HttpResponse:
     context = {'posts': posts}
 
     return render(request, 'library/flow.html', context)
+
+@login_required(login_url='/')
+def ticket_creation(request) -> HttpResponse:
+    """group all tickets and  review for flow.
+    """
+    if request.method == "POST":
+        form = TicketCreationForm(request.POST, request.FILES)
+        if form.is_valid():
+            ticket = Ticket(title=form.cleaned_data['title'],
+                            description=form.cleaned_data['description'],
+                            user=request.user,
+                            image=form.cleaned_data['image'])
+            ticket.save()
+            return redirect('library:flow')
+        else:
+            return HttpResponse("Formulaire invalide")
+    else:
+        form = TicketCreationForm()
+    return render(request, 'library/ticket.html', context={"form": form})
+
+@login_required(login_url='/')
+def review_creation(request) -> HttpResponse:
+    """group all tickets and  review for flow.
+    """
+    return render(request, 'library/review.html', context={})

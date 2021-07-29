@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.test import Client
 from library.models import Ticket, Review, UserFollows
 from account.models import User
+from library.forms import TicketCreationForm
 
 
 class TestLibrary:
@@ -14,6 +15,12 @@ class TestLibrary:
 
     def test_urls(self) -> None:
         response = self.client.get(reverse('library:flow'))
+        assert response.status_code == 302
+
+        response = self.client.get(reverse('library:ticket_creation'))
+        assert response.status_code == 302
+
+        response = self.client.get(reverse('library:review_creation'))
         assert response.status_code == 302
 
     @pytest.fixture
@@ -45,3 +52,15 @@ class TestLibrary:
     @pytest.mark.django_db
     def test_str_userfollows(self, db, user_ticket_follows_other_user: UserFollows) -> None:
         assert str(user_ticket_follows_other_user) == 'MOI follows LAUTRE'
+
+    @pytest.mark.django_db
+    def test_new_ticket(self, db, user_ticket: User) -> None:
+        ticket_count = Ticket.objects.count()
+        data = {'title': 'new book', 'description': 'quel beau livre', 'user': user_ticket, 'image': ''}
+        form = TicketCreationForm(data)
+        assert form.is_valid()
+
+        response = self.client.post(reverse('library:ticket_creation'), data)
+        print(response.content)
+        assert response.status_code == 302
+        # assert Ticket.objects.count() == ticket_count + 1
