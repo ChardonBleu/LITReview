@@ -90,16 +90,22 @@ class TestLibrary:
 
     @pytest.mark.django_db
     def test_ticket_creation(self, db, user_ticket: User) -> None:
-
+<<<<<<< HEAD
+        user_count = User.objects.count()
+=======
         user_count = Ticket.objects.count()
+>>>>>>> feature/review
         response = self.client.post(reverse('library:ticket_creation'),
                                     data={'title': 'new book',
                                           'description': 'quel beau livre',
                                           'user': user_ticket,
                                           'image': ''})
         assert response.status_code == 302
+<<<<<<< HEAD
+        assert User.objects.count() == user_count + 1
+=======
         assert Ticket.objects.count() == user_count + 1
-
+>>>>>>> feature/review
 
     @pytest.mark.django_db
     def test_response_invalid(self, db, user_ticket: User) -> None:
