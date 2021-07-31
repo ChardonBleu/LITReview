@@ -1,9 +1,13 @@
 import pytest
+
 from django.urls import reverse
 from django.test import Client
 from library.models import Ticket, Review, UserFollows
+from django.test import RequestFactory
+
 from account.models import User
 from library.forms import TicketCreationForm
+from library.views import ticket_creation
 
 
 class TestLibrary:
@@ -12,13 +16,18 @@ class TestLibrary:
 
     def setup(self) -> None:
         self.client = Client()
+        self.factory = RequestFactory()
 
-    def test_urls(self) -> None:
+    def test_urls_flow(self) -> None:
         response = self.client.get(reverse('library:flow'))
         assert response.status_code == 302
 
+    def test_urls_ticket_creation(self) -> None:
+
         response = self.client.get(reverse('library:ticket_creation'))
         assert response.status_code == 302
+
+    def test_urls_review_creation(self) -> None:
 
         response = self.client.get(reverse('library:review_creation'))
         assert response.status_code == 302
@@ -54,13 +63,47 @@ class TestLibrary:
         assert str(user_ticket_follows_other_user) == 'MOI follows LAUTRE'
 
     @pytest.mark.django_db
-    def test_new_ticket(self, db, user_ticket: User) -> None:
-        ticket_count = Ticket.objects.count()
+    def test_new_ticket_form_valid(self, db, user_ticket: User) -> None:
         data = {'title': 'new book', 'description': 'quel beau livre', 'user': user_ticket, 'image': ''}
         form = TicketCreationForm(data)
         assert form.is_valid()
 
-        response = self.client.post(reverse('library:ticket_creation'), data)
-        print(response.content)
+    @pytest.mark.django_db
+    def test_new_ticket_form_invalid(self, db, user_ticket: User) -> None:
+        data = {'title': 'new book', 'description': '', 'user': user_ticket, 'image': ''}
+        form = TicketCreationForm(data)
+        assert not form.is_valid()
+
+    @pytest.mark.django_db
+    def test_new_ticket_view(self, db, user_ticket: User) -> None:
+        request = self.factory.get('/ticket')
+        request.user = user_ticket
+        response = ticket_creation(request)
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_new_review_view(self, db, user_ticket: User) -> None:
+        request = self.factory.get('/review')
+        request.user = user_ticket
+        response = ticket_creation(request)
+        assert response.status_code == 200
+
+    @pytest.mark.django_db
+    def test_ticket_creation(self, db, user_ticket: User) -> None:
+        user_count = User.objects.count()
+        response = self.client.post(reverse('library:ticket_creation'),
+                                    data={'title': 'new book',
+                                          'description': 'quel beau livre',
+                                          'user': user_ticket,
+                                          'image': ''})
         assert response.status_code == 302
-        # assert Ticket.objects.count() == ticket_count + 1
+        assert User.objects.count() == user_count + 1
+
+    @pytest.mark.django_db
+    def test_response_invalid(self, db, user_ticket: User) -> None:
+        response = self.client.post(reverse('library:ticket_creation'),
+                                    data={'title': 'new book',
+                                          'description': 'quel beau livre',
+                                          'user': user_ticket,
+                                          'image': ''})
+        assert response.content == b'Formulaire invalide'
