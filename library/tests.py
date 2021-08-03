@@ -37,6 +37,11 @@ class TestLibrary:
         return User.objects.create_user(username='moi', password='mon_password_test')
 
     @pytest.fixture
+    def logged_user_ticket(self, db, user_ticket: User) -> User:
+        self.client.login(user_ticket)
+        return user_ticket
+
+    @pytest.fixture
     def other_user(self, db) -> User:
         return User.objects.create_user(username='lautre', password='password_autre_test')
 
@@ -89,23 +94,21 @@ class TestLibrary:
         assert response.status_code == 200
 
     @pytest.mark.django_db
-    def test_ticket_creation(self, db, user_ticket: User) -> None:
-
+    def test_ticket_creation(self, db, logged_user_ticket: User) -> None:
         user_count = Ticket.objects.count()
         response = self.client.post(reverse('library:ticket_creation'),
                                     data={'title': 'new book',
                                           'description': 'quel beau livre',
-                                          'user': user_ticket,
+                                          'user': logged_user_ticket,
                                           'image': ''})
         assert response.status_code == 302
         assert Ticket.objects.count() == user_count + 1
 
-
     @pytest.mark.django_db
-    def test_response_invalid(self, db, user_ticket: User) -> None:
+    def test_response_invalid(self, db, logged_user_ticket: User) -> None:
         response = self.client.post(reverse('library:ticket_creation'),
                                     data={'title': 'new book',
                                           'description': 'quel beau livre',
-                                          'user': user_ticket,
+                                          'user': logged_user_ticket,
                                           'image': ''})
         assert response.content == b'Formulaire invalide'
