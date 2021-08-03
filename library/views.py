@@ -37,7 +37,6 @@ def ticket_creation(request) -> HttpResponse:
             ticket.save()
             return redirect('library:flow')
         else:
-            print('aaaaaaaaaaaaaaaaaaaaaa', form.errors)
             return HttpResponse("Formulaire invalide")
     else:
         form = TicketCreationForm()
