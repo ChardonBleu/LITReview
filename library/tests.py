@@ -36,12 +36,6 @@ class TestLibrary:
     def user_ticket(self, db) -> User:
         return User.objects.create_user(username='moi', password='mon_password_test')
 
-    """@pytest.fixture
-    def logged_user_ticket(self, db) -> User:
-        logged_user = User.objects.create_user(username='moi_logged', password='mon_password_test')
-        self.client.login(username='moi_logged', password='mon_password_test')
-        return logged_user"""
-
     @pytest.fixture
     def other_user(self, db) -> User:
         return User.objects.create_user(username='lautre', password='password_autre_test')

@@ -30,10 +30,8 @@ def ticket_creation(request) -> HttpResponse:
     if request.method == "POST":
         form = TicketCreationForm(request.POST, request.FILES)
         if form.is_valid():
-            ticket = Ticket(title=form.cleaned_data['title'],
-                            description=form.cleaned_data['description'],
-                            user=request.user,
-                            image=form.cleaned_data['image'])
+            ticket = form.save(commit=False)
+            ticket.user = request.user
             ticket.save()
             return redirect('library:flow')
         else:
