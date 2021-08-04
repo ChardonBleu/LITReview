@@ -19,7 +19,12 @@
     {% if post.image %}
 
         <div>
-        <img src="{{ post.image.url }}" alt="{{ post.title }}"></img></div>
+        <img src="{{ post.image.url }}" alt="{{ post.title }}"></img>
+        </div>
+
+        <div>
+        <a href="{% url 'library:review_creation' %}">Créer une critique</a>
+        </div>
                     
     {% endif %}
                 

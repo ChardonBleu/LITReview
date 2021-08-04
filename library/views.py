@@ -63,3 +63,23 @@ def review_creation(request) -> HttpResponse:
     context = {"review_form": review_form, "ticket_form": ticket_form}
 
     return render(request, 'library/review.html', context=context)
+
+@login_required(login_url='/')
+def review_for_ticket(request) -> HttpResponse:
+    ticket = # requete sur ticket
+
+    if request.method == "POST":
+        review_form = ReviewCreationForm(request.POST)
+        if review_form.is_valid():
+            review = review_form.save(commit=False)
+            review.user = request.user
+            review.ticket = ticket
+            review.save()
+            return redirect('library:flow')
+        else:
+            return HttpResponse("Formulaire invalide")
+    else:
+        review_form = ReviewCreationForm()
+    context = {"review_form": review_form, "ticket": ticket}
+
+    return render(request, 'library/review.html', context=context)

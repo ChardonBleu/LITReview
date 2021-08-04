@@ -7,7 +7,7 @@ from django.test import RequestFactory
 
 from account.models import User
 from library.forms import TicketCreationForm
-from library.views import ticket_creation
+from library.views import ticket_creation, review_creation
 
 
 class TestLibrary:
@@ -32,6 +32,9 @@ class TestLibrary:
         response = self.client.get(reverse('library:review_creation'))
         assert response.status_code == 302
 
+    # ############################################################## #
+    # #######################  FIXTURES ############################ #
+
     @pytest.fixture
     def user_ticket(self, db) -> User:
         return User.objects.create_user(username='moi', password='mon_password_test')
@@ -48,6 +51,9 @@ class TestLibrary:
     def user_ticket_follows_other_user(self, db, user_ticket: User, other_user: User) -> UserFollows:
         return UserFollows.objects.create(user=user_ticket, followed_user=other_user)
 
+    # ############################################################## #
+    # ###################  TESTS STR models ######################## #
+
     def test_str_tickets(self, one_ticket: Ticket) -> None:
         assert str(one_ticket) == 'Mon livre préféré - by moi'
 
@@ -59,15 +65,8 @@ class TestLibrary:
     def test_str_userfollows(self, user_ticket_follows_other_user: UserFollows) -> None:
         assert str(user_ticket_follows_other_user) == 'MOI follows LAUTRE'
 
-    def test_new_ticket_form_valid(self, user_ticket: User) -> None:
-        data = {'title': 'new book', 'description': 'quel beau livre', 'user': user_ticket, 'image': ''}
-        form = TicketCreationForm(data)
-        assert form.is_valid()
-
-    def test_new_ticket_form_invalid(self, user_ticket: User) -> None:
-        data = {'title': '', 'description': '', 'user': user_ticket, 'image': ''}
-        form = TicketCreationForm(data)
-        assert not form.is_valid()
+    # ############################################################## #
+    # #####################  TESTS Tickets ######################### #
 
     def test_new_ticket_view(self, user_ticket: User) -> None:
         request = self.factory.get('/ticket')
@@ -75,14 +74,8 @@ class TestLibrary:
         response = ticket_creation(request)
         assert response.status_code == 200
 
-    def test_new_review_view(self, user_ticket: User) -> None:
-        request = self.factory.get('/review')
-        request.user = user_ticket
-        response = ticket_creation(request)
-        assert response.status_code == 200
-
     def test_ticket_creation(self, user_ticket: User) -> None:
-        user_count = Ticket.objects.count()
+        ticket_count = Ticket.objects.count()
         self.client.login(username='moi', password='mon_password_test')
         response = self.client.post(reverse('library:ticket_creation'),
                                     data={'title': 'new book',
@@ -90,13 +83,53 @@ class TestLibrary:
                                           'user': user_ticket,
                                           'image': ''})
         assert response.status_code == 302
-        assert Ticket.objects.count() == user_count + 1
+        assert Ticket.objects.count() == ticket_count + 1
 
-    def test_response_invalid(self, user_ticket: User) -> None:
+    def test_ticket_creation_response_invalid(self, user_ticket: User) -> None:
         self.client.login(username='moi', password='mon_password_test')
         response = self.client.post(reverse('library:ticket_creation'),
                                     data={'title': '',
                                           'description': 'description',
                                           'user': user_ticket,
                                           'image': ''})
+        assert response.content == b'Formulaire invalide'
+
+    # ############################################################## #
+    # #####################  TESTS Reviews ######################### #
+
+    def test_new_review_view(self, user_ticket: User) -> None:
+        request = self.factory.get('/review')
+        request.user = user_ticket
+        response = review_creation(request)
+        assert response.status_code == 200
+
+    def test_review_creation(self, user_ticket: User, one_ticket: Ticket) -> None:
+        review_count = Review.objects.count()
+        self.client.login(username='moi', password='mon_password_test')
+
+        response = self.client.post(reverse('library:review_creation'),
+                                    data={'title': 'new book',
+                                          'description': 'quel beau livre',
+                                          'user': user_ticket,
+                                          'image': '',
+                                          'headline': 'good book',
+                                          'body': 'quel beau livre',
+                                          'user': user_ticket,
+                                          'rating': 4,
+                                          'ticket': one_ticket})
+        assert response.status_code == 302
+        assert Review.objects.count() == review_count + 1
+
+    def test_review_creation_invalid_response(self, user_ticket: User, one_ticket: Ticket) -> None:
+        self.client.login(username='moi', password='mon_password_test')
+        response = self.client.post(reverse('library:review_creation'),
+                                    data={'title': '',
+                                          'description': 'quel beau livre',
+                                          'user': user_ticket,
+                                          'image': '',
+                                          'headline': 'good book',
+                                          'body': 'quel beau livre',
+                                          'user': user_ticket,
+                                          'rating': 4,
+                                          'ticket': one_ticket})
         assert response.content == b'Formulaire invalide'
