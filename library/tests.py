@@ -65,7 +65,7 @@ class TestLibrary:
         assert form.is_valid()
 
     def test_new_ticket_form_invalid(self, user_ticket: User) -> None:
-        data = {'title': 'new book', 'description': '', 'user': user_ticket, 'image': ''}
+        data = {'title': '', 'description': '', 'user': user_ticket, 'image': ''}
         form = TicketCreationForm(data)
         assert not form.is_valid()
 
@@ -95,8 +95,8 @@ class TestLibrary:
     def test_response_invalid(self, user_ticket: User) -> None:
         self.client.login(username='moi', password='mon_password_test')
         response = self.client.post(reverse('library:ticket_creation'),
-                                    data={'title': 'new book',
-                                          'description': '',
+                                    data={'title': '',
+                                          'description': 'description',
                                           'user': user_ticket,
                                           'image': ''})
         assert response.content == b'Formulaire invalide'

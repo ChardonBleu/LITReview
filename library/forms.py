@@ -1,5 +1,5 @@
 from django import forms
-from .models import Ticket
+from .models import Ticket, Review
 
 class TicketCreationForm(forms.ModelForm):
 
@@ -8,3 +8,11 @@ class TicketCreationForm(forms.ModelForm):
         fields = ['title',
                   'description',
                   'image']
+
+class ReviewCreationForm(forms.ModelForm):
+
+    class Meta:
+        model = Review
+        fields = ['headline',
+                  'body',
+                  'rating']
