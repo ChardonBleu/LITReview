@@ -81,5 +81,4 @@ def review_for_ticket(request) -> HttpResponse:
     else:
         review_form = ReviewCreationForm()
     context = {"review_form": review_form, "ticket": ticket}
-
     return render(request, 'library/review.html', context=context)
