@@ -17,7 +17,7 @@
                 <h1>LITReview</h1>
                 <nav>
                     <a href="{% url 'library:flow' %}">flux</a> | 
-                    <a>Posts</a> | 
+                    <a href="{% url 'library:posts' %}">Posts</a> | 
                     <a>Abonnements</a> | 
                     <a href="{% url 'account:logout' %}">Se deconnecter</a> | 
                     {% if user.is_authenticated %}

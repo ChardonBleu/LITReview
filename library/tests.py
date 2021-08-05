@@ -18,20 +18,6 @@ class TestLibrary:
         self.client = Client()
         self.factory = RequestFactory()
 
-    def test_urls_flow(self) -> None:
-        response = self.client.get(reverse('library:flow'))
-        assert response.status_code == 302
-
-    def test_urls_ticket_creation(self) -> None:
-
-        response = self.client.get(reverse('library:ticket_creation'))
-        assert response.status_code == 302
-
-    def test_urls_review_creation(self) -> None:
-
-        response = self.client.get(reverse('library:review_creation'))
-        assert response.status_code == 302
-
     # ############################################################## #
     # #######################  FIXTURES ############################ #
 
