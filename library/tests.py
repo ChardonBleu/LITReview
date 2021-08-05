@@ -7,7 +7,7 @@ from library.models import Ticket, Review, UserFollows
 from django.test import RequestFactory
 
 from account.models import User
-from library.views import ticket_creation, review_creation, review_for_ticket
+from library.views import ticket_creation, review_creation, review_for_ticket, posts
 
 
 class TestLibrary:
@@ -151,3 +151,12 @@ class TestLibrary:
                                           'rating': 4,
                                           'ticket': one_ticket})
         assert response.content == b'Formulaire invalide'
+
+    # ############################################################## #
+    # #######################  TESTS Posts ######################### #
+
+    def test_posts_view(self, user_ticket: User) -> None:
+        request = self.factory.get('/posts/')
+        request.user = user_ticket
+        response = posts(request)
+        assert response.status_code == 200
