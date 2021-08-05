@@ -1,3 +1,4 @@
+from django.urls.base import reverse_lazy
 import pytest
 
 from django.urls import reverse
@@ -6,8 +7,7 @@ from library.models import Ticket, Review, UserFollows
 from django.test import RequestFactory
 
 from account.models import User
-from library.forms import TicketCreationForm
-from library.views import ticket_creation, review_creation
+from library.views import ticket_creation, review_creation, review_for_ticket
 
 
 class TestLibrary:
@@ -30,11 +30,6 @@ class TestLibrary:
     def test_urls_review_creation(self) -> None:
 
         response = self.client.get(reverse('library:review_creation'))
-        assert response.status_code == 302
-    
-    def test_urls_review_creation(self) -> None:
-
-        response = self.client.get(reverse('library:review_ticket'))
         assert response.status_code == 302
 
     # ############################################################## #
@@ -71,7 +66,7 @@ class TestLibrary:
         assert str(user_ticket_follows_other_user) == 'MOI follows LAUTRE'
 
     # ############################################################## #
-    # #####################  TESTS Tickets ######################### #
+    # #################  TESTS Tickets creation #################### #
 
     def test_new_ticket_view(self, user_ticket: User) -> None:
         request = self.factory.get('/ticket')
@@ -100,7 +95,7 @@ class TestLibrary:
         assert response.content == b'Formulaire invalide'
 
     # ############################################################## #
-    # #####################  TESTS Reviews ######################### #
+    # ##################  TESTS Reviews creation ################### #
 
     def test_new_review_view(self, user_ticket: User) -> None:
         request = self.factory.get('/review')
@@ -133,6 +128,38 @@ class TestLibrary:
                                           'user': user_ticket,
                                           'image': '',
                                           'headline': 'good book',
+                                          'body': 'quel beau livre',
+                                          'user': user_ticket,
+                                          'rating': 4,
+                                          'ticket': one_ticket})
+        assert response.content == b'Formulaire invalide'
+
+    # ############################################################## #
+    # ############  TESTS Reviews for existing ticket ############## #
+
+    def test_review_for_ticket_view(self, user_ticket: User, one_ticket: Ticket) -> None:
+        request = self.factory.get('/review_ticket/1/')
+        request.user = user_ticket
+        request.ticket = one_ticket
+        response = review_for_ticket(request, ticket_id=1)
+        assert response.status_code == 200
+
+    def test_review_for_ticket_creation(self, user_ticket: User, one_ticket: Ticket) -> None:
+        review_count = Review.objects.count()
+        self.client.login(username='moi', password='mon_password_test')
+        response = self.client.post(reverse('library:review_ticket', args=[1]),
+                                    data={'headline': 'good book',
+                                          'body': 'quel beau livre',
+                                          'user': user_ticket,
+                                          'rating': 4,
+                                          'ticket': one_ticket})
+        assert response.status_code == 302
+        assert Review.objects.count() == review_count + 1
+
+    def test_review_for_ticket_invalid_response(self, user_ticket: User, one_ticket: Ticket) -> None:
+        self.client.login(username='moi', password='mon_password_test')
+        response = self.client.post(reverse('library:review_ticket', args=[1]),
+                                    data={'headline': '',
                                           'body': 'quel beau livre',
                                           'user': user_ticket,
                                           'rating': 4,
