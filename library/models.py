@@ -25,6 +25,17 @@ class TicketManager(models.Manager):
                          reverse=True)
         return tickets
 
+    def get_own_tickets(self, request):
+        """Select tickets for the posts page
+
+        Returns:
+            [iterable object] -- regroup all query results in one single list
+        """
+        tickets_user = self.filter(user=request.user)
+        tickets_user = tickets_user.annotate(content_type=Value('TICKET', CharField()))
+
+        return tickets_user
+
 
 class Ticket(models.Model):
     """Describe a book or article wich can receive reviews.
@@ -87,6 +98,17 @@ class ReviewManager(models.Manager):
                          key=lambda post: post.datetime_created,
                          reverse=True)
         return reviews
+
+    def get_own_reviews(self, request):
+        """Select reviews for the flow page
+
+        Returns:
+            [iterable object] -- regroup all query results in one single list
+        """
+        reviews_user = Review.objects.filter(user=request.user)
+        reviews_user = reviews_user.annotate(content_type=Value('REVIEW', CharField()))
+
+        return reviews_user
 
 
 class Review(models.Model):

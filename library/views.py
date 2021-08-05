@@ -62,7 +62,6 @@ def review_creation(request) -> HttpResponse:
         review_form = ReviewCreationForm()
         ticket_form = TicketCreationForm()
     context = {"review_form": review_form, "ticket_form": ticket_form}
-
     return render(request, 'library/review.html', context=context)
 
 @login_required(login_url='/')
@@ -84,3 +83,15 @@ def review_for_ticket(request, ticket_id) -> HttpResponse:
         review_form = ReviewCreationForm()
     context = {"review_form": review_form, "ticket": ticket}
     return render(request, 'library/review_ticket.html', context=context)
+
+@login_required(login_url='/')
+def posts(request) -> HttpResponse:
+    tickets = Ticket.objects.get_own_tickets(request)
+    reviews = Review.objects.get_own_reviews(request)
+
+    posts = sorted(chain(reviews, tickets),
+                   key=lambda post: post.datetime_created,
+                   reverse=True)
+    context = {'posts': posts}
+
+    return render(request, 'library/posts.html', context)
