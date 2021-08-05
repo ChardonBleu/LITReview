@@ -31,6 +31,11 @@ class TestLibrary:
 
         response = self.client.get(reverse('library:review_creation'))
         assert response.status_code == 302
+    
+    def test_urls_review_creation(self) -> None:
+
+        response = self.client.get(reverse('library:review_ticket'))
+        assert response.status_code == 302
 
     # ############################################################## #
     # #######################  FIXTURES ############################ #

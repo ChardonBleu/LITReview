@@ -11,8 +11,18 @@
         {% for post in posts %}
             {% if post.content_type == 'TICKET' %}
                 {% include 'library/ticket_snippet.html' %}
+                    {% if post.related_review == False %}
+                        <div>
+                            <a href="{% url 'library:review_ticket' post.id %}">Créer une critique</a>
+                        </div>
+                    {% endif %}
             {% elif post.content_type == 'REVIEW' %}
                 {% include 'library/review_snippet.html' %}
+                    {% if post.user != user %}
+                        <div>
+                            <a href="{% url 'library:review_ticket' post.ticket.id %}">Créer une critique</a>
+                        </div>
+                    {% endif %}
             {% endif %}
         {% endfor %}
 
