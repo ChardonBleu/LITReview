@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from django.conf.urls.static import static
 from django.urls.conf import include
 
@@ -13,6 +13,7 @@ urlpatterns = [
     path('', include('account.urls', namespace='account')),
     path('ticket/', views.ticket_creation, name="ticket_creation"),
     path('review/', views.review_creation, name="review_creation"),
+    re_path(r'^review_ticket/(?P<ticket_id>\d+)/$', views.review_for_ticket, name="review_ticket")
 ]
 
 if settings.DEBUG:

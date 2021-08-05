@@ -65,8 +65,8 @@ def review_creation(request) -> HttpResponse:
     return render(request, 'library/review.html', context=context)
 
 @login_required(login_url='/')
-def review_for_ticket(request) -> HttpResponse:
-    ticket = # requete sur ticket
+def review_for_ticket(request, ticket_id) -> HttpResponse:
+    ticket = Ticket.objects.get(id=ticket_id)
 
     if request.method == "POST":
         review_form = ReviewCreationForm(request.POST)
@@ -81,4 +81,4 @@ def review_for_ticket(request) -> HttpResponse:
     else:
         review_form = ReviewCreationForm()
     context = {"review_form": review_form, "ticket": ticket}
-    return render(request, 'library/review.html', context=context)
+    return render(request, 'library/review_ticket.html', context=context)
