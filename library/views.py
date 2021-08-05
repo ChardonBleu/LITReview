@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
 from .models import Review, Ticket
-from .forms import TicketCreationForm
+from .forms import TicketCreationForm, ReviewCreationForm
 
 
 @login_required(login_url='/')
@@ -30,14 +30,11 @@ def ticket_creation(request) -> HttpResponse:
     if request.method == "POST":
         form = TicketCreationForm(request.POST, request.FILES)
         if form.is_valid():
-            ticket = Ticket(title=form.cleaned_data['title'],
-                            description=form.cleaned_data['description'],
-                            user=request.user,
-                            image=form.cleaned_data['image'])
+            ticket = form.save(commit=False)
+            ticket.user = request.user
             ticket.save()
             return redirect('library:flow')
         else:
-            print('aaaaaaaaaaaaaaaaaaaaaa', form.errors)
             return HttpResponse("Formulaire invalide")
     else:
         form = TicketCreationForm()
@@ -45,6 +42,45 @@ def ticket_creation(request) -> HttpResponse:
 
 @login_required(login_url='/')
 def review_creation(request) -> HttpResponse:
-    """group all tickets and  review for flow.
-    """
-    return render(request, 'library/review.html', context={})
+
+    if request.method == "POST":
+        ticket_form = TicketCreationForm(request.POST, request.FILES)
+        review_form = ReviewCreationForm(request.POST)
+        if review_form.is_valid() and ticket_form.is_valid():
+            ticket = ticket_form.save(commit=False)
+            ticket.user = request.user
+            ticket.related_review = True
+            ticket.save()
+            review = review_form.save(commit=False)
+            review.user = request.user
+            review.ticket = ticket
+            review.save()
+            return redirect('library:flow')
+        else:
+            return HttpResponse("Formulaire invalide")
+    else:
+        review_form = ReviewCreationForm()
+        ticket_form = TicketCreationForm()
+    context = {"review_form": review_form, "ticket_form": ticket_form}
+
+    return render(request, 'library/review.html', context=context)
+
+@login_required(login_url='/')
+def review_for_ticket(request, ticket_id) -> HttpResponse:
+    ticket = Ticket.objects.get(id=ticket_id)
+
+    if request.method == "POST":
+        review_form = ReviewCreationForm(request.POST)
+        if review_form.is_valid():
+            review = review_form.save(commit=False)
+            review.user = request.user
+            ticket.related_review = True
+            review.ticket = ticket
+            review.save()
+            return redirect('library:flow')
+        else:
+            return HttpResponse("Formulaire invalide")
+    else:
+        review_form = ReviewCreationForm()
+    context = {"review_form": review_form, "ticket": ticket}
+    return render(request, 'library/review_ticket.html', context=context)

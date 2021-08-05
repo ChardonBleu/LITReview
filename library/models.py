@@ -23,7 +23,6 @@ class TicketManager(models.Manager):
         tickets = sorted(chain(tickets_user, tickets_followed_user),
                          key=lambda post: post.datetime_created,
                          reverse=True)
-
         return tickets
 
 
@@ -53,6 +52,10 @@ class Ticket(models.Model):
     datetime_created = models.DateTimeField(
         auto_now_add=True,
         help_text=_("ticket creation date is automatically filled in."))
+
+    related_review = models.BooleanField(
+        default=False,
+        help_text="True if at least one review exists for this ticket")
 
     objects = TicketManager()
 
@@ -98,7 +101,8 @@ class Review(models.Model):
         to=Ticket,
         on_delete=models.CASCADE,
         help_text=_("Each review is related to a Ticket describing a book or an article.\
-            If a the related ticket is deleted, the review is deleted."))
+            If a the related ticket is deleted, the review is deleted."),
+        related_name='ticket')
     rating = models.PositiveSmallIntegerField(
         # validates that rating must be between 0 and 5
         validators=[MinValueValidator(0), MaxValueValidator(5)],
@@ -114,7 +118,8 @@ class Review(models.Model):
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        help_text=_(""))
+        help_text=_(""),
+        related_name='user')
     datetime_created = models.DateTimeField(
         auto_now_add=True,
         help_text=_("Each review is related tu a user. If the user is deleted,\
