@@ -7,7 +7,7 @@ from library.models import Ticket, Review, UserFollows
 from django.test import RequestFactory
 
 from account.models import User
-from library.views import ticket_creation, review_creation, review_for_ticket, posts
+from library.views import post_modification_ticket, ticket_creation, review_creation, review_for_ticket, posts
 
 
 class TestLibrary:
@@ -159,4 +159,11 @@ class TestLibrary:
         request = self.factory.get('/posts/')
         request.user = user_ticket
         response = posts(request)
+        assert response.status_code == 200
+
+    def test_modify_ticket_view(self, user_ticket: User, one_ticket: Ticket) -> None:
+        request = self.factory.get('/modify_ticket/1/')
+        request.user = user_ticket
+        request.ticket = one_ticket
+        response = post_modification_ticket(request, ticket_id=1)
         assert response.status_code == 200

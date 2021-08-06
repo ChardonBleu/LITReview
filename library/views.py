@@ -1,11 +1,12 @@
 from itertools import chain
+from django.db.models.query import InstanceCheckMeta
 from django.http.response import HttpResponse
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
 from .models import Review, Ticket
-from .forms import TicketCreationForm, ReviewCreationForm
+from .forms import TicketCreationForm, ReviewCreationForm, TicketUpdateForm
 
 
 @login_required(login_url='/')
@@ -95,3 +96,26 @@ def posts(request) -> HttpResponse:
     context = {'posts': posts}
 
     return render(request, 'library/posts.html', context)
+
+@login_required(login_url='/')
+def post_modification_ticket(request, ticket_id) -> HttpResponse:
+    ticket = Ticket.objects.get(id=ticket_id)
+    if request.method == "POST":
+        form = TicketUpdateForm(request.POST, request.FILES, instance=ticket)
+        if form.is_valid():
+            print("avant save: ", ticket.description)
+            instance = form.save(commit=False)
+            instance.save()
+            print("après save: ", ticket.description)
+            return redirect('library:posts')
+        else:
+            return HttpResponse("Formulaire invalide")
+    else:
+        data = {
+            'title': ticket.title,
+            'description': ticket.description,
+            'image': ticket.image
+        }
+        form = TicketUpdateForm(data)
+    context = {"form": form, "ticket": ticket}
+    return render(request, 'library/modify_ticket.html', context=context)

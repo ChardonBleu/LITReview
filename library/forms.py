@@ -16,3 +16,21 @@ class ReviewCreationForm(forms.ModelForm):
         fields = ['headline',
                   'body',
                   'rating']
+
+class TicketUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = Ticket
+        fields = ['title',
+                  'description',
+                  'image']
+
+    def save(self, commit=True):
+        ticket = self.instance
+        ticket.title = self.cleaned_data['title']
+        ticket.description = self.cleaned_data['description']
+        if self.cleaned_data['image']:
+            ticket.image = self.cleaned_data['image']
+        if commit:
+            ticket.save()
+        return ticket
