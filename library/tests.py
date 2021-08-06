@@ -167,3 +167,19 @@ class TestLibrary:
         request.ticket = one_ticket
         response = post_modification_ticket(request, ticket_id=1)
         assert response.status_code == 200
+
+    def test_ticket_update(self, one_ticket: Ticket) -> None:
+        self.client.login(username='moi', password='mon_password_test')
+        response = self.client.post(reverse('library:modify_ticket', args=[1]),
+                                    data={'title': 'new book update',
+                                          'description': 'quel beau livre',
+                                          'image': 'monimage.jpg'})
+        assert response.status_code == 302
+
+    def test_ticket_update_response_invalid(self, one_ticket: Ticket) -> None:
+        self.client.login(username='moi', password='mon_password_test')
+        response = self.client.post(reverse('library:modify_ticket', args=[1]),
+                                    data={'title': '',
+                                          'description': 'description',
+                                          'image': ''})
+        assert response.content == b'Formulaire invalide'

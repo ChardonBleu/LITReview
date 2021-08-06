@@ -103,10 +103,8 @@ def post_modification_ticket(request, ticket_id) -> HttpResponse:
     if request.method == "POST":
         form = TicketUpdateForm(request.POST, request.FILES, instance=ticket)
         if form.is_valid():
-            print("avant save: ", ticket.description)
             instance = form.save(commit=False)
             instance.save()
-            print("après save: ", ticket.description)
             return redirect('library:posts')
         else:
             return HttpResponse("Formulaire invalide")
@@ -119,3 +117,14 @@ def post_modification_ticket(request, ticket_id) -> HttpResponse:
         form = TicketUpdateForm(data)
     context = {"form": form, "ticket": ticket}
     return render(request, 'library/modify_ticket.html', context=context)
+
+
+@login_required(login_url='/')
+def post_deletion(request, ticket_id, post_type) -> HttpResponse:
+    if post_type == 'TICKET':
+        Ticket.objects.filter(id=ticket_id).delete()
+        return redirect('library:posts')
+    elif post_type == 'REVIEW':
+        Review.objects.filter(id=ticket_id).delete()
+        return redirect('library:posts')
+    return render(request, 'library/delete_post.html', context={})
