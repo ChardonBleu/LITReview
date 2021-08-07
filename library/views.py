@@ -1,11 +1,12 @@
 from itertools import chain
+from django.db.models.query import InstanceCheckMeta
 from django.http.response import HttpResponse
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
 from .models import Review, Ticket
-from .forms import TicketCreationForm, ReviewCreationForm
+from .forms import TicketCreationForm, ReviewCreationForm, TicketUpdateForm, ReviewUpdateForm
 
 
 @login_required(login_url='/')
@@ -95,3 +96,56 @@ def posts(request) -> HttpResponse:
     context = {'posts': posts}
 
     return render(request, 'library/posts.html', context)
+
+@login_required(login_url='/')
+def post_modification_ticket(request, ticket_id) -> HttpResponse:
+    ticket = Ticket.objects.get(id=ticket_id)
+    if request.method == "POST":
+        form = TicketUpdateForm(request.POST, request.FILES, instance=ticket)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.save()
+            return redirect('library:posts')
+        else:
+            return HttpResponse("Formulaire invalide")
+    else:
+        data = {
+            'title': ticket.title,
+            'description': ticket.description,
+            'image': ticket.image
+        }
+        form = TicketUpdateForm(data)
+    context = {"form": form, "ticket": ticket}
+    return render(request, 'library/modify_ticket.html', context=context)
+
+@login_required(login_url='/')
+def post_deletion(request, post_id, post_type) -> HttpResponse:
+    if post_type == 'TICKET':
+        Ticket.objects.filter(id=post_id).delete()
+        return redirect('library:posts')
+    elif post_type == 'REVIEW':
+        Review.objects.filter(id=post_id).delete()
+        return redirect('library:posts')
+    context = {'post_id': post_id, 'post_type': post_type}
+    return render(request, 'library/delete_post.html', context=context)
+
+@login_required(login_url='/')
+def post_modification_review(request, review_id) -> HttpResponse:
+    review = Review.objects.get(id=review_id)
+    if request.method == "POST":
+        form = ReviewUpdateForm(request.POST, instance=review)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.save()
+            return redirect('library:posts')
+        else:
+            return HttpResponse("Formulaire invalide")
+    else:
+        data = {
+            'headline': review.headline,
+            'body': review.body,
+            'rating': review.rating
+        }
+        form = ReviewUpdateForm(data)
+    context = {"form": form, "review": review}
+    return render(request, 'library/modify_review.html', context=context)

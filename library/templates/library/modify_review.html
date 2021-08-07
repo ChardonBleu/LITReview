@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div>
+        <p>Modifier une critique</p>
+    </div>            
+
+        {% if user.is_authenticated %}
+
+            <div>
+            <p>Vous êtes en train de poster en réponse à</p>
+                <div>
+                    <p>***************************************</p>
+                    <div>
+                        <span>
+                            {% if user.get_username == review.ticket.user.username %}
+                                Vous avez 
+                            {% else %}
+                                {{ review.ticket.user.username }} a 
+                            {% endif %}
+                            demandé une critique
+                        </span>
+                        <span>{{ review.ticket.datetime_created|time:"H:i" }} {{ review.ticket.datetime_created|date:"d F Y" }}</span>
+                    </div>
+
+                    <p>{{review.ticket.title}}</p>
+                    <p>{{review.ticket.description}}</p>
+                                
+                    {% if review.ticket.image %}
+
+                        <div>
+                        <img src="{{ review.ticket.image.url }}" alt="{{ review.ticket.title }}"></img>
+                        </div>
+                                    
+                    {% endif %}
+                                
+                </div>
+            </div>
+
+            <div>
+                <p>Critique</p>
+                <form method="post">
+                {% csrf_token %}
+                    {{ form.non_field_errors }} 
+                    <div>
+                        <p>{{ form.headline.label }} {{ form.headline.errors }}</p>                    
+                        <p>{{ form.headline }}</p>
+
+                        <p>{{ form.rating.label }} {{ form.rating.errors }}</p>                    
+                        <p>{{ form.rating }}</p>
+
+                        <p>{{ form.body.label }} {{ form.body.errors }}</p>                    
+                        <p>{{ form.body }}</p>
+
+                    </div>
+
+                    <div>
+                        <input type="submit" value="Envoyer">
+                    </div>
+
+                </form>
+
+            </div>
+
+        {% endif %}
+
+{% endblock %}

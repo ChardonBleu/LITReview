@@ -33,7 +33,6 @@ class TicketManager(models.Manager):
         """
         tickets_user = self.filter(user=request.user)
         tickets_user = tickets_user.annotate(content_type=Value('TICKET', CharField()))
-
         return tickets_user
 
 
