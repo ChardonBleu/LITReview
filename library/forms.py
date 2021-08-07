@@ -34,3 +34,20 @@ class TicketUpdateForm(forms.ModelForm):
         if commit:
             ticket.save()
         return ticket
+
+class ReviewUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = Review
+        fields = ['headline',
+                  'body',
+                  'rating']
+
+    def save(self, commit=True):
+        review = self.instance
+        review.headline = self.cleaned_data['headline']
+        review.body = self.cleaned_data['body']
+        review.rating = self.cleaned_data['rating']
+        if commit:
+            review.save()
+        return review

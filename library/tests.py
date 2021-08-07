@@ -8,7 +8,7 @@ from django.test import RequestFactory
 
 from account.models import User
 from library.views import post_modification_ticket, ticket_creation, review_creation, review_for_ticket, posts
-from library.views import post_deletion
+from library.views import post_deletion, post_modification_review
 
 class TestLibrary:
     """
@@ -32,6 +32,10 @@ class TestLibrary:
     @pytest.fixture
     def one_ticket(self, db, user_ticket: User) -> Ticket:
         return Ticket.objects.create(title='Mon livre préféré', user=user_ticket)
+
+    @pytest.fixture
+    def one_review(self, db, user_ticket: User, one_ticket: Ticket) -> Review:
+        return Review.objects.create(headline='Très bon livre', user=user_ticket, rating=5, ticket=one_ticket)
 
     @pytest.fixture
     def user_ticket_follows_other_user(self, db, user_ticket: User, other_user: User) -> UserFollows:
@@ -173,7 +177,7 @@ class TestLibrary:
         response = self.client.post(reverse('library:modify_ticket', args=[1]),
                                     data={'title': 'new book update',
                                           'description': 'quel beau livre',
-                                          'image': 'monimage.jpg'})
+                                          'image': 'logo.jpg'})
         assert response.status_code == 302
 
     def test_ticket_update_response_invalid(self, one_ticket: Ticket) -> None:
@@ -185,13 +189,39 @@ class TestLibrary:
         assert response.content == b'Formulaire invalide'
 
     def test_deldete_ticket_view(self, user_ticket: User) -> None:
-        request = self.factory.get('/deldete_post/1/TICKET')
+        request = self.factory.get('/delete_post/1/TICKET')
         request.user = user_ticket
-        response = post_deletion(request, ticket_id=1, post_type='TICKET')
+        response = post_deletion(request, post_id=1, post_type='TICKET')
         assert response.status_code == 302
 
     def test_deldete_review_view(self, user_ticket: User) -> None:
-        request = self.factory.get('/deldete_post/1/REVIEW')
+        request = self.factory.get('/delete_post/1/REVIEW')
         request.user = user_ticket
-        response = post_deletion(request, ticket_id=1, post_type='REVIEW')
+        response = post_deletion(request, post_id=1, post_type='REVIEW')
         assert response.status_code == 302
+
+    def test_modify_review_view(self, user_ticket: User, one_review: Review) -> None:
+        request = self.factory.get('/modify_review/1/')
+        request.user = user_ticket
+        request.review = one_review
+        response = post_modification_review(request, review_id=1)
+        assert response.status_code == 200
+
+    def test_review_update(self, one_review: Review) -> None:
+        self.client.login(username='moi', password='mon_password_test')
+        review_before = Review.objects.get(id=1)
+        response = self.client.post(reverse('library:modify_review', args=[1]),
+                                    data={'headline': 'Trés trés bon livre',
+                                          'body': '',
+                                          'rating': '3'})
+        review_after = Review.objects.get(id=1)
+        assert response.status_code == 302
+        assert review_before.headline != review_after.headline
+
+    def test_review_update_response_invalid(self, one_review: Review) -> None:
+        self.client.login(username='moi', password='mon_password_test')
+        response = self.client.post(reverse('library:modify_review', args=[1]),
+                                    data={'headline': '',
+                                          'body': 'description',
+                                          'rating': '3'})
+        assert response.content == b'Formulaire invalide'

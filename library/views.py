@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
 from .models import Review, Ticket
-from .forms import TicketCreationForm, ReviewCreationForm, TicketUpdateForm
+from .forms import TicketCreationForm, ReviewCreationForm, TicketUpdateForm, ReviewUpdateForm
 
 
 @login_required(login_url='/')
@@ -118,13 +118,34 @@ def post_modification_ticket(request, ticket_id) -> HttpResponse:
     context = {"form": form, "ticket": ticket}
     return render(request, 'library/modify_ticket.html', context=context)
 
-
 @login_required(login_url='/')
-def post_deletion(request, ticket_id, post_type) -> HttpResponse:
+def post_deletion(request, post_id, post_type) -> HttpResponse:
     if post_type == 'TICKET':
-        Ticket.objects.filter(id=ticket_id).delete()
+        Ticket.objects.filter(id=post_id).delete()
         return redirect('library:posts')
     elif post_type == 'REVIEW':
-        Review.objects.filter(id=ticket_id).delete()
+        Review.objects.filter(id=post_id).delete()
         return redirect('library:posts')
-    return render(request, 'library/delete_post.html', context={})
+    context = {'post_id': post_id, 'post_type': post_type}
+    return render(request, 'library/delete_post.html', context=context)
+
+@login_required(login_url='/')
+def post_modification_review(request, review_id) -> HttpResponse:
+    review = Review.objects.get(id=review_id)
+    if request.method == "POST":
+        form = ReviewUpdateForm(request.POST, instance=review)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.save()
+            return redirect('library:posts')
+        else:
+            return HttpResponse("Formulaire invalide")
+    else:
+        data = {
+            'headline': review.headline,
+            'body': review.body,
+            'rating': review.rating
+        }
+        form = ReviewUpdateForm(data)
+    context = {"form": form, "review": review}
+    return render(request, 'library/modify_review.html', context=context)
