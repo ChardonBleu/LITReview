@@ -216,7 +216,7 @@ def test_ticket_update(connect_client: Client, one_ticket: Ticket) -> None:
                                            'description': 'quel beau livre',
                                            'image': 'logo.jpg'})
     assert response.status_code == 302
- 
+
 def test_ticket_update_unauthorized(connect_client: Client, other_ticket: Ticket) -> None:
     connected_client, connected_user = connect_client
     response = connected_client.post(reverse('library:modify_ticket', args=[1]),
@@ -237,14 +237,14 @@ def test_delete_ticket_view(factory: RequestFactory, connect_client: Client) -> 
     request = factory.get('TICKET/1/delete/')
     connected_client, connected_user = connect_client
     request.user = connected_user
-    response = ticket_deletion(request, post_id=1)
+    response = ticket_deletion(request, ticket_id=1)
     assert response.status_code == 302
 
 def test_deldete_review_view(factory: RequestFactory, connect_client: Client) -> None:
     request = factory.get('REVIEW/1/delete')
     connected_client, connected_user = connect_client
     request.user = connected_user
-    response = review_deletion(request, post_id=1)
+    response = review_deletion(request, review_id=1)
     assert response.status_code == 302
 
 def test_modify_review_view(factory: RequestFactory, connect_client: Client, one_review: Review) -> None:

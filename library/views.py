@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
 from .models import Review, Ticket
-from .forms import TicketCreationForm, ReviewCreationForm, TicketUpdateForm, ReviewUpdateForm
+from .forms import TicketForm, ReviewForm
 
 
 @login_required(login_url='/')
@@ -29,7 +29,7 @@ def ticket_creation(request) -> HttpResponse:
     """group all tickets and  review for flow.
     """
     if request.method == "POST":
-        form = TicketCreationForm(request.POST, request.FILES)
+        form = TicketForm(request.POST, request.FILES)
         if form.is_valid():
             ticket = form.save(commit=False)
             ticket.user = request.user
@@ -38,15 +38,15 @@ def ticket_creation(request) -> HttpResponse:
         else:
             return HttpResponse("Formulaire invalide")
     else:
-        form = TicketCreationForm()
+        form = TicketForm()
     return render(request, 'library/ticket.html', context={"form": form})
 
 @login_required(login_url='/')
 def review_creation(request) -> HttpResponse:
 
     if request.method == "POST":
-        ticket_form = TicketCreationForm(request.POST, request.FILES)
-        review_form = ReviewCreationForm(request.POST)
+        ticket_form = TicketForm(request.POST, request.FILES)
+        review_form = ReviewForm(request.POST)
         if review_form.is_valid() and ticket_form.is_valid():
             ticket = ticket_form.save(commit=False)
             ticket.user = request.user
@@ -60,8 +60,8 @@ def review_creation(request) -> HttpResponse:
         else:
             return HttpResponse("Formulaire invalide")
     else:
-        review_form = ReviewCreationForm()
-        ticket_form = TicketCreationForm()
+        review_form = ReviewForm()
+        ticket_form = TicketForm()
     context = {"review_form": review_form, "ticket_form": ticket_form}
     return render(request, 'library/review.html', context=context)
 
@@ -70,7 +70,7 @@ def review_for_ticket(request, ticket_id) -> HttpResponse:
     ticket = Ticket.objects.get(id=ticket_id)
 
     if request.method == "POST":
-        review_form = ReviewCreationForm(request.POST)
+        review_form = ReviewForm(request.POST)
         if review_form.is_valid():
             review = review_form.save(commit=False)
             review.user = request.user
@@ -81,7 +81,7 @@ def review_for_ticket(request, ticket_id) -> HttpResponse:
         else:
             return HttpResponse("Formulaire invalide")
     else:
-        review_form = ReviewCreationForm()
+        review_form = ReviewForm()
     context = {"review_form": review_form, "ticket": ticket}
     return render(request, 'library/review_ticket.html', context=context)
 
@@ -104,7 +104,7 @@ def post_modification_ticket(request, ticket_id) -> HttpResponse:
         return HttpResponse("Vous ne pouvez modifier un ticket dont vous n'êtes pas l'auteur.<br>\
             <a href='../../../posts/'>Retour</a>")
     if request.method == "POST":
-        form = TicketUpdateForm(request.POST, request.FILES, instance=ticket)
+        form = TicketForm(request.POST, request.FILES, instance=ticket)
         if form.is_valid():
             instance = form.save(commit=False)
             instance.save()
@@ -117,18 +117,18 @@ def post_modification_ticket(request, ticket_id) -> HttpResponse:
             'description': ticket.description,
             'image': ticket.image
         }
-        form = TicketUpdateForm(data)
+        form = TicketForm(data)
     context = {"form": form, "ticket": ticket}
     return render(request, 'library/modify_ticket.html', context=context)
 
 @login_required(login_url='/')
-def ticket_deletion(request, post_id) -> HttpResponse:
-    Ticket.objects.filter(id=post_id).delete()
+def ticket_deletion(request, ticket_id) -> HttpResponse:
+    Ticket.objects.filter(id=ticket_id).delete()
     return redirect('library:posts')
 
 @login_required(login_url='/')
-def review_deletion(request, post_id) -> HttpResponse:
-    Review.objects.filter(id=post_id).delete()
+def review_deletion(request, review_id) -> HttpResponse:
+    Review.objects.filter(id=review_id).delete()
     return redirect('library:posts')
 
 @login_required(login_url='/')
@@ -138,7 +138,7 @@ def post_modification_review(request, review_id) -> HttpResponse:
         return HttpResponse("Vous ne pouvez modifier une critique dont vous n'êtes pas l'auteur.<br>\
             <a href='../../../posts/'>Retour</a>")
     if request.method == "POST":
-        form = ReviewUpdateForm(request.POST, instance=review)
+        form = ReviewForm(request.POST, instance=review)
         if form.is_valid():
             instance = form.save(commit=False)
             instance.save()
@@ -151,6 +151,6 @@ def post_modification_review(request, review_id) -> HttpResponse:
             'body': review.body,
             'rating': review.rating
         }
-        form = ReviewUpdateForm(data)
+        form = ReviewForm(data)
     context = {"form": form, "review": review}
     return render(request, 'library/modify_review.html', context=context)
