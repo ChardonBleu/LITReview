@@ -7,13 +7,10 @@ from library.models import Ticket, Review, UserFollows
 from django.test import RequestFactory
 
 from account.models import User
-from library.views import post_modification_ticket, ticket_creation, review_creation, review_for_ticket, posts
-from library.views import ticket_deletion, review_deletion, post_modification_review
-
+from library.views import posts
 
 # ############################################################## #
 # #######################  FIXTURES ############################ #
-
 
 @pytest.fixture
 def current_user(db) -> User:
@@ -78,6 +75,7 @@ def test_urls(connect_client: Client, client: Client) -> None:
     """[summary]
     """
     connected_client, connected_user = connect_client
+
     response = connected_client.get('/')
     assert response.status_code == 200
 
@@ -87,18 +85,16 @@ def test_urls(connect_client: Client, client: Client) -> None:
     response = connected_client.get(reverse('account:logout'))
     assert response.status_code == 302
 
-
 # ############################################################## #
 # #################  TESTS Tickets creation #################### #
 
-def test_new_ticket_view(factory: RequestFactory, connect_client: Client) -> None:
-    request = factory.get('/ticket')
+def test_ticket_view(connect_client: Client) -> None:
     connected_client, connected_user = connect_client
-    request.user = connected_user
-    response = ticket_creation(request)
+    response = connected_client.get(reverse('library:ticket_creation'),
+                                    data={})
     assert response.status_code == 200
 
-def test_ticket_creation(connect_client) -> None:
+def test_ticket_creation(connect_client: Client) -> None:
     connected_client, connected_user = connect_client
     ticket_count = Ticket.objects.count()
     response = connected_client.post(reverse('library:ticket_creation'),
@@ -121,11 +117,10 @@ def test_ticket_creation_response_invalid(connect_client: Client) -> None:
 # ############################################################## #
 # ##################  TESTS Reviews creation ################### #
 
-def test_new_review_view(factory: RequestFactory, connect_client: Client) -> None:
-    request = factory.get('/review')
+def test_review_view(connect_client: Client) -> None:
     connected_client, connected_user = connect_client
-    request.user = connected_user
-    response = review_creation(request)
+    response = connected_client.get(reverse('library:review_creation'),
+                                    data={})
     assert response.status_code == 200
 
 def test_review_creation(connect_client: Client, one_ticket: Ticket) -> None:
@@ -161,12 +156,10 @@ def test_review_creation_invalid_response(connect_client: Client, one_ticket: Ti
 # ############################################################## #
 # ############  TESTS Reviews for existing ticket ############## #
 
-def test_review_for_ticket_view(factory: RequestFactory, connect_client: Client, one_ticket: Ticket) -> None:
-    request = factory.get('/review_ticket/1/')
+def test_review_for_ticket_view(connect_client: Client, one_ticket: Ticket) -> None:
     connected_client, connected_user = connect_client
-    request.user = connected_user
-    request.ticket = one_ticket
-    response = review_for_ticket(request, ticket_id=1)
+    response = connected_client.get(reverse('library:review_ticket', args=[1]),
+                                    data={})
     assert response.status_code == 200
 
 def test_review_for_ticket_creation(connect_client: Client, one_ticket: Ticket) -> None:
@@ -201,12 +194,10 @@ def test_posts_view(factory: RequestFactory, connect_client: Client) -> None:
     response = posts(request)
     assert response.status_code == 200
 
-def test_modify_ticket_view(factory: RequestFactory, connect_client: Client, one_ticket: Ticket) -> None:
-    request = factory.get('/modify_ticket/1/')
+def test_modify_ticket_view(connect_client: Client, one_ticket: Ticket) -> None:
     connected_client, connected_user = connect_client
-    request.user = connected_user
-    request.ticket = one_ticket
-    response = post_modification_ticket(request, ticket_id=1)
+    response = connected_client.get(reverse('library:modify_ticket', args=[1]),
+                                    data={})
     assert response.status_code == 200
 
 def test_ticket_update(connect_client: Client, one_ticket: Ticket) -> None:
@@ -233,26 +224,28 @@ def test_ticket_update_response_invalid(connect_client: Client, one_ticket: Tick
                                            'image': ''})
     assert response.content == b'Formulaire invalide'
 
-def test_delete_ticket_view(factory: RequestFactory, connect_client: Client) -> None:
-    request = factory.get('TICKET/1/delete/')
+def test_delete_ticket_view(connect_client: Client) -> None:
     connected_client, connected_user = connect_client
-    request.user = connected_user
-    response = ticket_deletion(request, ticket_id=1)
+    Ticket.objects.create(title='livre à supprimer', description='description', user=connected_user)
+    response = connected_client.delete(reverse('library:delete_ticket', args=[2]))
     assert response.status_code == 302
 
-def test_deldete_review_view(factory: RequestFactory, connect_client: Client) -> None:
-    request = factory.get('REVIEW/1/delete')
+def test_deldete_review_view(connect_client: Client, one_ticket: Ticket) -> None:
     connected_client, connected_user = connect_client
-    request.user = connected_user
-    response = review_deletion(request, review_id=1)
+    Review.objects.create(headline='critique à supprimer',
+                          body='description',
+                          rating=4,
+                          user=connected_user,
+                          ticket=one_ticket)
+    response = connected_client.delete(reverse('library:delete_review', args=[2]))
     assert response.status_code == 302
 
-def test_modify_review_view(factory: RequestFactory, connect_client: Client, one_review: Review) -> None:
-    request = factory.get('/modify_review/1/')
+def test_modify_review_view(connect_client: Client, one_review: Review) -> None:
     connected_client, connected_user = connect_client
-    request.user = connected_user
-    request.review = one_review
-    response = post_modification_review(request, review_id=1)
+    response = connected_client.get(reverse('library:modify_review', args=[1]),
+                                    data={'headline': 'Trés trés bon livre',
+                                          'body': '',
+                                          'rating': '3'})
     assert response.status_code == 200
 
 def test_review_update(connect_client: Client, one_review: Review) -> None:
