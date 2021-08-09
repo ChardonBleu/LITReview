@@ -13,11 +13,12 @@ urlpatterns = [
     path('', include('account.urls', namespace='account')),
     path('ticket/', views.ticket_creation, name="ticket_creation"),
     path('review/', views.review_creation, name="review_creation"),
-    re_path(r'^review_ticket/(?P<ticket_id>\d+)/$', views.review_for_ticket, name="review_ticket"),
+    path('review_ticket/<int:ticket_id>/', views.review_for_ticket, name="review_ticket"),
     path('posts/', views.posts, name="posts"),
-    re_path(r'^modify_ticket/(?P<ticket_id>\d+)/$', views.post_modification_ticket, name="modify_ticket"),
-    re_path(r'^modify_review/(?P<review_id>\d+)/$', views.post_modification_review, name="modify_review"),
-    re_path(r'^delete_post/(?P<post_id>\d+)/(?P<post_type>\w+)/$', views.post_deletion, name="delete_post"),
+    path('ticket/<int:ticket_id>/modify/', views.post_modification_ticket, name="modify_ticket"),
+    path('review/<int:review_id>/modify/', views.post_modification_review, name="modify_review"),
+    path('ticket/<int:ticket_id>/delete/', views.ticket_deletion, name="delete_ticket"),
+    path('review/<int:review_id>/delete/', views.review_deletion, name="delete_review"),
 ]
 
 if settings.DEBUG:

@@ -11,15 +11,12 @@
 
             {% if post.content_type == 'TICKET' %}
                 {% include 'library/ticket_snippet.html' %}
-                <a href="{% url 'library:modify_ticket' post.id %}">Modifier</a>                    
+                <a href="{% url 'library:modify_ticket' post.id %}">Modifier</a> | <a href="{% url 'library:delete_ticket' post.id %}">Supprimer</a>                  
             {% elif post.content_type == 'REVIEW' %}
                 {% include 'library/review_snippet.html' %}
-                <a href="{% url 'library:modify_review' post.id %}">Modifier</a>  
+                <a href="{% url 'library:modify_review' post.id %}">Modifier</a> | <a href="{% url 'library:delete_review' post.id %}">Supprimer</a> 
 
             {% endif %}
-
-            
-            <a href="{% url 'library:delete_post' post.id post.content_type %}">Supprimer</a>
 
         {% endfor %}
 

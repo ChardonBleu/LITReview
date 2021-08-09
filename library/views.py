@@ -100,6 +100,9 @@ def posts(request) -> HttpResponse:
 @login_required(login_url='/')
 def post_modification_ticket(request, ticket_id) -> HttpResponse:
     ticket = Ticket.objects.get(id=ticket_id)
+    if ticket.user != request.user:
+        return HttpResponse("Vous ne pouvez modifier un ticket dont vous n'êtes pas l'auteur.<br>\
+            <a href='{% url 'library:post' %}'>Retour</a>")
     if request.method == "POST":
         form = TicketUpdateForm(request.POST, request.FILES, instance=ticket)
         if form.is_valid():
@@ -119,15 +122,14 @@ def post_modification_ticket(request, ticket_id) -> HttpResponse:
     return render(request, 'library/modify_ticket.html', context=context)
 
 @login_required(login_url='/')
-def post_deletion(request, post_id, post_type) -> HttpResponse:
-    if post_type == 'TICKET':
-        Ticket.objects.filter(id=post_id).delete()
-        return redirect('library:posts')
-    elif post_type == 'REVIEW':
-        Review.objects.filter(id=post_id).delete()
-        return redirect('library:posts')
-    context = {'post_id': post_id, 'post_type': post_type}
-    return render(request, 'library/delete_post.html', context=context)
+def ticket_deletion(request, ticket_id) -> HttpResponse:
+    Ticket.objects.filter(id=ticket_id).delete()
+    return redirect('library:posts')
+
+@login_required(login_url='/')
+def review_deletion(request, review_id) -> HttpResponse:
+    Review.objects.filter(id=review_id).delete()
+    return redirect('library:posts')
 
 @login_required(login_url='/')
 def post_modification_review(request, review_id) -> HttpResponse:
