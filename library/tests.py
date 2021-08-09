@@ -41,8 +41,16 @@ def one_ticket(db, current_user: User) -> Ticket:
     return Ticket.objects.create(title='Mon livre préféré', user=current_user)
 
 @pytest.fixture
+def other_ticket(db, other_user: User) -> Ticket:
+    return Ticket.objects.create(title='Mon livre préféré', user=other_user)
+
+@pytest.fixture
 def one_review(db, current_user: User, one_ticket: Ticket) -> Review:
     return Review.objects.create(headline='Très bon livre', user=current_user, rating=5, ticket=one_ticket)
+
+@pytest.fixture
+def other_review(db, other_user: User, other_ticket: Ticket) -> Review:
+    return Review.objects.create(headline='Très bon livre', user=other_user, rating=5, ticket=other_ticket)
 
 @pytest.fixture
 def user_follows_other_user(db, current_user: User, other_user: User) -> UserFollows:
@@ -98,7 +106,6 @@ def test_ticket_creation(connect_client) -> None:
                                            'description': 'quel beau livre',
                                            'user': connected_user,
                                            'image': ''})
-    print(response.content)
     assert response.status_code == 302
     assert Ticket.objects.count() == ticket_count + 1
 
@@ -209,6 +216,14 @@ def test_ticket_update(connect_client: Client, one_ticket: Ticket) -> None:
                                            'description': 'quel beau livre',
                                            'image': 'logo.jpg'})
     assert response.status_code == 302
+ 
+def test_ticket_update_unauthorized(connect_client: Client, other_ticket: Ticket) -> None:
+    connected_client, connected_user = connect_client
+    response = connected_client.post(reverse('library:modify_ticket', args=[1]),
+                                     data={'title': 'new book update',
+                                           'description': 'quel beau livre',
+                                           'image': 'logo.jpg'})
+    assert response.content == b"Vous ne pouvez modifier un ticket dont vous n'\xc3\xaates pas l'auteur.<br>            <a href='../../../posts/'>Retour</a>"
 
 def test_ticket_update_response_invalid(connect_client: Client, one_ticket: Ticket) -> None:
     connected_client, connected_user = connect_client
@@ -218,7 +233,7 @@ def test_ticket_update_response_invalid(connect_client: Client, one_ticket: Tick
                                            'image': ''})
     assert response.content == b'Formulaire invalide'
 
-def test_deldete_ticket_view(factory: RequestFactory, connect_client: Client) -> None:
+def test_delete_ticket_view(factory: RequestFactory, connect_client: Client) -> None:
     request = factory.get('TICKET/1/delete/')
     connected_client, connected_user = connect_client
     request.user = connected_user
@@ -250,6 +265,14 @@ def test_review_update(connect_client: Client, one_review: Review) -> None:
     review_after = Review.objects.get(id=1)
     assert response.status_code == 302
     assert review_before.headline != review_after.headline
+
+def test_review_update_unauthorized(connect_client: Client, other_review: Review) -> None:
+    connected_client, connected_user = connect_client
+    response = connected_client.post(reverse('library:modify_review', args=[1]),
+                                     data={'title': 'new book update',
+                                           'description': 'quel beau livre',
+                                           'image': 'logo.jpg'})
+    assert response.content == b"Vous ne pouvez modifier une critique dont vous n'\xc3\xaates pas l'auteur.<br>            <a href='../../../posts/'>Retour</a>"
 
 def test_review_update_response_invalid(connect_client: Client, one_review: Review) -> None:
     connected_client, connected_user = connect_client

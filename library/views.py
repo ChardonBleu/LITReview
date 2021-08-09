@@ -102,7 +102,7 @@ def post_modification_ticket(request, ticket_id) -> HttpResponse:
     ticket = Ticket.objects.get(id=ticket_id)
     if ticket.user != request.user:
         return HttpResponse("Vous ne pouvez modifier un ticket dont vous n'êtes pas l'auteur.<br>\
-            <a href='{% url 'library:post' %}'>Retour</a>")
+            <a href='../../../posts/'>Retour</a>")
     if request.method == "POST":
         form = TicketUpdateForm(request.POST, request.FILES, instance=ticket)
         if form.is_valid():
@@ -122,18 +122,21 @@ def post_modification_ticket(request, ticket_id) -> HttpResponse:
     return render(request, 'library/modify_ticket.html', context=context)
 
 @login_required(login_url='/')
-def ticket_deletion(request, ticket_id) -> HttpResponse:
-    Ticket.objects.filter(id=ticket_id).delete()
+def ticket_deletion(request, post_id) -> HttpResponse:
+    Ticket.objects.filter(id=post_id).delete()
     return redirect('library:posts')
 
 @login_required(login_url='/')
-def review_deletion(request, review_id) -> HttpResponse:
-    Review.objects.filter(id=review_id).delete()
+def review_deletion(request, post_id) -> HttpResponse:
+    Review.objects.filter(id=post_id).delete()
     return redirect('library:posts')
 
 @login_required(login_url='/')
 def post_modification_review(request, review_id) -> HttpResponse:
     review = Review.objects.get(id=review_id)
+    if review.user != request.user:
+        return HttpResponse("Vous ne pouvez modifier une critique dont vous n'êtes pas l'auteur.<br>\
+            <a href='../../../posts/'>Retour</a>")
     if request.method == "POST":
         form = ReviewUpdateForm(request.POST, instance=review)
         if form.is_valid():
