@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div>
+        <p>Suivre d'autres utilisateurs</p>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Envoyer">
+        </form>
+    </div>
+
+    <div>        
+
+        <div>
+            <p>Abonnements</p>
+        </div>
+        {% for subscription in subscriptions %}
+            <div>
+                {{ subscription.followed_user.username }} <!-- le pseudo des utilisateurs qui suivent l'utilisateur connecté  -->
+            </div>
+        {% endfor %}
+        
+
+        <div>
+            <p>Abonnés</p>
+        </div>
+        {% for follower in followers %}
+            <div>
+                {{ follower.user.username }} <!-- le pseudo des utilisateurs qui suivent l'utilisateur connecté  -->
+            </div>
+        {% endfor %}
+
+    </div>
+
+{% endblock %}

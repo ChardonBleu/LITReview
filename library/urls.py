@@ -3,6 +3,7 @@ from django.conf.urls.static import static
 from django.urls.conf import include
 
 from library import views
+from library.views import FollowingView
 from LITReview import settings
 
 
@@ -19,6 +20,7 @@ urlpatterns = [
     path('review/<int:review_id>/modify/', views.post_modification_review, name="modify_review"),
     path('ticket/<int:ticket_id>/delete/', views.ticket_deletion, name="delete_ticket"),
     path('review/<int:review_id>/delete/', views.review_deletion, name="delete_review"),
+    path('following/', FollowingView.as_view(), name="following")
 ]
 
 if settings.DEBUG:
