@@ -1,10 +1,12 @@
 from itertools import chain
 from typing import Dict
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.urls.base import reverse, reverse_lazy
+from django.utils.functional import lazy
 
 from django.views.generic.edit import CreateView
 
@@ -162,12 +164,24 @@ def post_modification_review(request, review_id) -> HttpResponse:
 class FollowingView(LoginRequiredMixin, CreateView):
     model = UserFollows
     fields = ['followed_user']
+    success_url = reverse_lazy('library: following')
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
-        print(context)
         user_subscriptions = UserFollows.objects.get_users_subscriptions(self.request)
         user_followers = UserFollows.objects.get_users_followers(self.request)
         context['subscriptions'] = user_subscriptions
         context['followers'] = user_followers
         return context
+
+    def form_valid(self, form) -> HttpResponse:
+        """
+        If the form is valid, redirect to the supplied URL
+        """
+        model_instance = form.save(commit=False)
+        model_instance.user = self.request.user
+        model_instance.save()
+        return HttpResponse(self.get_success_url())
+
+    def get_success_url(self) -> str:
+        return reverse_lazy('library: following')
