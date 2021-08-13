@@ -1,11 +1,14 @@
 from itertools import chain
-from django.db.models.query import InstanceCheckMeta
+from typing import Dict
 from django.http.response import HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
-from .models import Review, Ticket
+from django.views.generic.edit import CreateView
+
+from .models import Review, Ticket, UserFollows
 from .forms import TicketForm, ReviewForm
 
 
@@ -154,3 +157,17 @@ def post_modification_review(request, review_id) -> HttpResponse:
         form = ReviewForm(data)
     context = {"form": form, "review": review}
     return render(request, 'library/modify_review.html', context=context)
+
+
+class FollowingView(LoginRequiredMixin, CreateView):
+    model = UserFollows
+    fields = ['followed_user']
+
+    def get_context_data(self, **kwargs) -> Dict:
+        context = super().get_context_data(**kwargs)
+        print(context)
+        user_subscriptions = UserFollows.objects.get_users_subscriptions(self.request)
+        user_followers = UserFollows.objects.get_users_followers(self.request)
+        context['subscriptions'] = user_subscriptions
+        context['followers'] = user_followers
+        return context

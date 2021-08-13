@@ -161,6 +161,28 @@ class Review(models.Model):
         return f"{self.headline} - by {self.user} - related to ticket {self.ticket.title}"
 
 
+class UserFollowsManager(models.Manager):
+    def get_users_subscriptions(self, request):
+        """Select who is following the authenticated user
+
+        Returns:
+            [iterable object] -- regroup all query results in one single list
+        """
+        user_subscriptions = UserFollows.objects.filter(user=request.user)
+
+        return user_subscriptions
+
+    def get_users_followers(self, request):
+        """Select who follows the authenticated user
+
+        Returns:
+            [iterable object] -- regroup all query results in one single list
+        """
+        user_followers = UserFollows.objects.filter(followed_user=request.user)
+
+        return user_followers
+
+
 class UserFollows(models.Model):
     """Is used to memorize the users followed by a user
     """
@@ -174,6 +196,8 @@ class UserFollows(models.Model):
         on_delete=models.CASCADE,
         related_name='followed_by',
         help_text=_(""))
+
+    objects = UserFollowsManager()
 
     class Meta:
         """ Ensures we don't get multiple UserFollows instances
