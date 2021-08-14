@@ -174,14 +174,19 @@ class FollowingView(LoginRequiredMixin, CreateView):
         context['followers'] = user_followers
         return context
 
-    def form_valid(self, form) -> HttpResponse:
+    def form_valid(self, form, **kwargs) -> HttpResponse:
         """
         If the form is valid, redirect to the supplied URL
         """
+        context = super().get_context_data(**kwargs)
+        user_subscriptions = UserFollows.objects.get_users_subscriptions(self.request)
+        user_followers = UserFollows.objects.get_users_followers(self.request)
+        context['subscriptions'] = user_subscriptions
+        context['followers'] = user_followers
         model_instance = form.save(commit=False)
         model_instance.user = self.request.user
-        model_instance.save()
-        return HttpResponse(self.get_success_url())
-
-    def get_success_url(self) -> str:
-        return reverse_lazy('library: following')
+        if model_instance.followed_user == self.request.user:
+            return HttpResponse("Vous ne pouvez pas vous suivre vous même.<br> <a href='../../../following/'>Retour</a>")
+        else:
+            model_instance.save()
+        return render(self.request, 'library/userfollows_form.html', context=context)
