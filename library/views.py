@@ -128,12 +128,22 @@ def post_modification_ticket(request, ticket_id) -> HttpResponse:
 
 @login_required(login_url='/')
 def ticket_deletion(request, ticket_id) -> HttpResponse:
-    Ticket.objects.filter(id=ticket_id).delete()
+    ticket = Ticket.objects.filter(id=ticket_id)
+    if ticket.user != request.user:
+        return HttpResponse("Vous ne pouvez supprimer un ticket dont vous n'êtes pas l'auteur.<br>\
+            <a href='../../../posts/'>Retour</a>")
+    else:
+        Ticket.objects.filter(id=ticket_id).delete()
     return redirect('library:posts')
 
 @login_required(login_url='/')
 def review_deletion(request, review_id) -> HttpResponse:
-    Review.objects.filter(id=review_id).delete()
+    review = Review.objects.filter(id=review_id)
+    if review.user != request.user:
+        return HttpResponse("Vous ne pouvez supprimer un ticket dont vous n'êtes pas l'auteur.<br>\
+            <a href='../../../posts/'>Retour</a>")
+    else:
+        Review.objects.filter(id=review_id).delete()
     return redirect('library:posts')
 
 @login_required(login_url='/')
@@ -164,6 +174,7 @@ def post_modification_review(request, review_id) -> HttpResponse:
 class FollowingView(LoginRequiredMixin, CreateView):
     model = UserFollows
     fields = ['followed_user']
+    success_url = '../../../following/'
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
@@ -190,9 +201,9 @@ class FollowingView(LoginRequiredMixin, CreateView):
             return HttpResponse("Vous suivez déjà cet utilisateur.<br> <a href='../../../following/'>Retour</a>")
         else:
             model_instance.save()
-            return render(self.request, 'library/userfollows_form.html', context=context)
+            return super().form_valid(form)
 
 class SubscriptionDeletionView(LoginRequiredMixin, DeleteView):
     model = UserFollows
     pk_url_kwarg = 'userfollows_id'
-    success_url = reverse_lazy('library: following')
+    success_url = '../../../following/'
