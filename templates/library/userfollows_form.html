@@ -19,6 +19,7 @@
             <div>
                 {{ subscription.followed_user.username }} <!-- le pseudo des utilisateurs qui suivent l'utilisateur connecté  -->
             </div>
+            <a href="{% url 'library:delete_subscription' subscription.id %}">Supprimer</a> 
         {% endfor %}
         
 

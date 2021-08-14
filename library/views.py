@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls.base import reverse, reverse_lazy
 from django.utils.functional import lazy
 
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, DeleteView
 
 from .models import Review, Ticket, UserFollows
 from .forms import TicketForm, ReviewForm
@@ -128,12 +128,22 @@ def post_modification_ticket(request, ticket_id) -> HttpResponse:
 
 @login_required(login_url='/')
 def ticket_deletion(request, ticket_id) -> HttpResponse:
-    Ticket.objects.filter(id=ticket_id).delete()
+    ticket = Ticket.objects.filter(id=ticket_id)
+    if ticket.user != request.user:
+        return HttpResponse("Vous ne pouvez supprimer un ticket dont vous n'êtes pas l'auteur.<br>\
+            <a href='../../../posts/'>Retour</a>")
+    else:
+        Ticket.objects.filter(id=ticket_id).delete()
     return redirect('library:posts')
 
 @login_required(login_url='/')
 def review_deletion(request, review_id) -> HttpResponse:
-    Review.objects.filter(id=review_id).delete()
+    review = Review.objects.filter(id=review_id)
+    if review.user != request.user:
+        return HttpResponse("Vous ne pouvez supprimer un ticket dont vous n'êtes pas l'auteur.<br>\
+            <a href='../../../posts/'>Retour</a>")
+    else:
+        Review.objects.filter(id=review_id).delete()
     return redirect('library:posts')
 
 @login_required(login_url='/')
@@ -164,7 +174,7 @@ def post_modification_review(request, review_id) -> HttpResponse:
 class FollowingView(LoginRequiredMixin, CreateView):
     model = UserFollows
     fields = ['followed_user']
-    success_url = reverse_lazy('library: following')
+    success_url = '../../../following/'
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
@@ -174,14 +184,26 @@ class FollowingView(LoginRequiredMixin, CreateView):
         context['followers'] = user_followers
         return context
 
-    def form_valid(self, form) -> HttpResponse:
+    def form_valid(self, form, **kwargs) -> HttpResponse:
         """
         If the form is valid, redirect to the supplied URL
         """
+        context = self.get_context_data(**kwargs)
         model_instance = form.save(commit=False)
         model_instance.user = self.request.user
-        model_instance.save()
-        return HttpResponse(self.get_success_url())
+        user_subscriptions = UserFollows.objects.filter(user=self.request.user,
+                                                        followed_user=model_instance.followed_user)
+        print('user: ', user_subscriptions)
+        if model_instance.followed_user == self.request.user:
+            return HttpResponse("Vous ne pouvez pas vous suivre vous même.<br>\
+                <a href='../../../following/'>Retour</a>")
+        elif UserFollows.objects.filter(user=self.request.user, followed_user=model_instance.followed_user):
+            return HttpResponse("Vous suivez déjà cet utilisateur.<br> <a href='../../../following/'>Retour</a>")
+        else:
+            model_instance.save()
+            return super().form_valid(form)
 
-    def get_success_url(self) -> str:
-        return reverse_lazy('library: following')
+class SubscriptionDeletionView(LoginRequiredMixin, DeleteView):
+    model = UserFollows
+    pk_url_kwarg = 'userfollows_id'
+    success_url = '../../../following/'
