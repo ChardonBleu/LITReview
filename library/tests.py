@@ -220,7 +220,8 @@ def test_ticket_update_unauthorized(connect_client: Client, other_ticket: Ticket
                                      data={'title': 'new book update',
                                            'description': 'quel beau livre',
                                            'image': 'logo.jpg'})
-    assert response.content == b"Vous ne pouvez modifier un ticket dont vous n'\xc3\xaates pas l'auteur.<br>            <a href='../../../posts/'>Retour</a>"
+    assert response.content == b"Vous ne pouvez modifier un ticket dont vous n'\xc3\xaates pas l'auteur.<br>" +\
+        b"<a href='../../../posts/'>Retour</a>"
 
 def test_ticket_update_response_invalid(connect_client: Client, one_ticket: Ticket) -> None:
     connected_client, connected_user = connect_client
@@ -240,7 +241,8 @@ def test_delete_ticket_error(connect_client: Client, one_ticket: Ticket, other_u
     connected_client, connected_user = connect_client
     Ticket.objects.create(title='livre à supprimer', description='description', user=other_user)
     response = connected_client.delete(reverse('library:delete_ticket', args=[2]))
-    assert response.content == b"Vous ne pouvez supprimer un ticket dont vous n'\xc3\xaates pas l'auteur.<br>            <a href='../../../posts/'>Retour</a>"
+    assert response.content == b"Vous ne pouvez supprimer un ticket dont vous n'\xc3\xaates pas l'auteur.<br>" +\
+        b"<a href='../../../posts/'>Retour</a>"
 
 def test_deldete_review_view(connect_client: Client, one_ticket: Ticket, one_review: Review) -> None:
     connected_client, connected_user = connect_client
@@ -260,7 +262,8 @@ def test_deldete_review_error(connect_client: Client, one_ticket: Ticket, one_re
                           user=other_user,
                           ticket=one_ticket)
     response = connected_client.delete(reverse('library:delete_review', args=[2]))
-    assert response.content == b"Vous ne pouvez supprimer une critique dont vous n'\xc3\xaates pas l'auteur.<br>            <a href='../../../posts/'>Retour</a>"
+    assert response.content == b"Vous ne pouvez supprimer une critique dont vous n'\xc3\xaates pas l'auteur.<br>" +\
+        b"<a href='../../../posts/'>Retour</a>"
 
 def test_modify_review_view(connect_client: Client, one_review: Review) -> None:
     connected_client, connected_user = connect_client
@@ -287,7 +290,8 @@ def test_review_update_unauthorized(connect_client: Client, other_review: Review
                                      data={'title': 'new book update',
                                            'description': 'quel beau livre',
                                            'image': 'logo.jpg'})
-    assert response.content == b"Vous ne pouvez modifier une critique dont vous n'\xc3\xaates pas l'auteur.<br>            <a href='../../../posts/'>Retour</a>"
+    assert response.content == b"Vous ne pouvez modifier une critique dont vous n'\xc3\xaates pas l'auteur.<br>" +\
+        b"<a href='../../../posts/'>Retour</a>"
 
 def test_review_update_response_invalid(connect_client: Client, one_review: Review) -> None:
     connected_client, connected_user = connect_client
@@ -313,14 +317,18 @@ def test_userfollows_creation_error_oneself(connect_client: Client, other_user: 
     response = connected_client.post(reverse('library:following'),
                                      data={'followed_user': 1,
                                            'user': connected_user})
-    assert response.content == b"Vous ne pouvez pas vous suivre vous m\xc3\xaame.<br>                <a href='../../../following/'>Retour</a>"
+    assert response.content == b"Vous ne pouvez pas vous suivre vous m\xc3\xaame.<br><a href='../../../following/'>" +\
+        b"Retour</a>"
 
-def test_userfollows_creation_error_yetfollowed(connect_client: Client, user_follows_other_user: UserFollows, other_user: User) -> None:
+def test_userfollows_creation_error_yetfollowed(connect_client: Client,
+                                                user_follows_other_user: UserFollows,
+                                                other_user: User) -> None:
     connected_client, connected_user = connect_client
     response = connected_client.post(reverse('library:following'),
                                      data={'followed_user': 2,
                                            'user': connected_user})
-    assert response.content == b"Vous suivez d\xc3\xa9j\xc3\xa0 cet utilisateur.<br> <a href='../../../following/'>Retour</a>"
+    assert response.content == b"Vous suivez d\xc3\xa9j\xc3\xa0 cet utilisateur.<br>" +\
+        b"<a href='../../../following/'>Retour</a>"
 
 def test_userfollows_creation_invalid(connect_client: Client, other_user: User, third_user: User) -> None:
     connected_client, connected_user = connect_client
@@ -343,4 +351,5 @@ def test_delete_userfollows_error(connect_client: Client, third_user: User, othe
     connected_client, connected_user = connect_client
     UserFollows.objects.create(followed_user=third_user, user=other_user)
     response = connected_client.delete(reverse('library:delete_subscription', args=[1]))
-    assert response.content == b"Vous ne pouvez pas supprimer un utilisateur que vous ne suivez pas.<br>                <a href='../../../following/'>Retour</a>"
+    assert response.content == b"Vous ne pouvez pas supprimer un utilisateur que vous ne suivez pas.<br>" +\
+        b"<a href='../../../following/'>Retour</a>"

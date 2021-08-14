@@ -107,7 +107,7 @@ def post_modification_ticket(request, ticket_id) -> HttpResponse:
     ticket = Ticket.objects.get(id=ticket_id)
     if ticket.user != request.user:
         return HttpResponse("Vous ne pouvez modifier un ticket dont vous n'êtes pas l'auteur.<br>\
-            <a href='../../../posts/'>Retour</a>")
+<a href='../../../posts/'>Retour</a>")
     if request.method == "POST":
         form = TicketForm(request.POST, request.FILES, instance=ticket)
         if form.is_valid():
@@ -131,7 +131,7 @@ def ticket_deletion(request, ticket_id) -> HttpResponse:
     ticket = Ticket.objects.get(id=ticket_id)
     if ticket.user != request.user:
         return HttpResponse("Vous ne pouvez supprimer un ticket dont vous n'êtes pas l'auteur.<br>\
-            <a href='../../../posts/'>Retour</a>")
+<a href='../../../posts/'>Retour</a>")
     else:
         Ticket.objects.filter(id=ticket_id).delete()
     return redirect('library:posts')
@@ -141,7 +141,7 @@ def review_deletion(request, review_id) -> HttpResponse:
     review = Review.objects.get(id=review_id)
     if review.user != request.user:
         return HttpResponse("Vous ne pouvez supprimer une critique dont vous n'êtes pas l'auteur.<br>\
-            <a href='../../../posts/'>Retour</a>")
+<a href='../../../posts/'>Retour</a>")
     else:
         Review.objects.filter(id=review_id).delete()
     return redirect('library:posts')
@@ -151,7 +151,7 @@ def post_modification_review(request, review_id) -> HttpResponse:
     review = Review.objects.get(id=review_id)
     if review.user != request.user:
         return HttpResponse("Vous ne pouvez modifier une critique dont vous n'êtes pas l'auteur.<br>\
-            <a href='../../../posts/'>Retour</a>")
+<a href='../../../posts/'>Retour</a>")
     if request.method == "POST":
         form = ReviewForm(request.POST, instance=review)
         if form.is_valid():
@@ -195,9 +195,9 @@ class FollowingView(LoginRequiredMixin, CreateView):
                                                         followed_user=model_instance.followed_user)
         if model_instance.followed_user == self.request.user:
             return HttpResponse("Vous ne pouvez pas vous suivre vous même.<br>\
-                <a href='../../../following/'>Retour</a>")
+<a href='../../../following/'>Retour</a>")
         if UserFollows.objects.filter(user=self.request.user, followed_user=model_instance.followed_user):
-            return HttpResponse("Vous suivez déjà cet utilisateur.<br> <a href='../../../following/'>Retour</a>")
+            return HttpResponse("Vous suivez déjà cet utilisateur.<br><a href='../../../following/'>Retour</a>")
         else:
             model_instance.save()
             return super().form_valid(form)
@@ -212,6 +212,6 @@ class SubscriptionDeletionView(LoginRequiredMixin, DeleteView):
         self.object = self.get_object()
         if self.object.user != request.user:
             return HttpResponse("Vous ne pouvez pas supprimer un utilisateur que vous ne suivez pas.<br>\
-                <a href='../../../following/'>Retour</a>")
+<a href='../../../following/'>Retour</a>")
         else:
             return super(SubscriptionDeletionView, self).delete(request, *args, **kwargs)
