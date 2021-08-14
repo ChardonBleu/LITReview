@@ -2,12 +2,14 @@ from django.urls.base import reverse_lazy
 import pytest
 
 from django.urls import reverse
+from django.utils.functional import lazy
 from django.test import Client
 from library.models import Ticket, Review, UserFollows
 from django.test import RequestFactory
 
 from account.models import User
-from library.views import posts
+from library.views import FollowingView, posts
+
 
 # ############################################################## #
 # #######################  FIXTURES ############################ #
@@ -32,6 +34,10 @@ def connect_client(client: Client, current_user: User) -> Client:
 @pytest.fixture
 def other_user(db) -> User:
     return User.objects.create_user(username='lautre', password='password_autre_test')
+
+@pytest.fixture
+def third_user(db) -> User:
+    return User.objects.create_user(username='letroisieme', password='password_autre_test')
 
 @pytest.fixture
 def one_ticket(db, current_user: User) -> Ticket:
@@ -224,13 +230,19 @@ def test_ticket_update_response_invalid(connect_client: Client, one_ticket: Tick
                                            'image': ''})
     assert response.content == b'Formulaire invalide'
 
-def test_delete_ticket_view(connect_client: Client) -> None:
+def test_delete_ticket_view(connect_client: Client, one_ticket: Ticket) -> None:
     connected_client, connected_user = connect_client
     Ticket.objects.create(title='livre à supprimer', description='description', user=connected_user)
     response = connected_client.delete(reverse('library:delete_ticket', args=[2]))
     assert response.status_code == 302
 
-def test_deldete_review_view(connect_client: Client, one_ticket: Ticket) -> None:
+def test_delete_ticket_error(connect_client: Client, one_ticket: Ticket, other_user: User) -> None:
+    connected_client, connected_user = connect_client
+    Ticket.objects.create(title='livre à supprimer', description='description', user=other_user)
+    response = connected_client.delete(reverse('library:delete_ticket', args=[2]))
+    assert response.content == b"Vous ne pouvez supprimer un ticket dont vous n'\xc3\xaates pas l'auteur.<br>            <a href='../../../posts/'>Retour</a>"
+
+def test_deldete_review_view(connect_client: Client, one_ticket: Ticket, one_review: Review) -> None:
     connected_client, connected_user = connect_client
     Review.objects.create(headline='critique à supprimer',
                           body='description',
@@ -239,6 +251,16 @@ def test_deldete_review_view(connect_client: Client, one_ticket: Ticket) -> None
                           ticket=one_ticket)
     response = connected_client.delete(reverse('library:delete_review', args=[2]))
     assert response.status_code == 302
+
+def test_deldete_review_error(connect_client: Client, one_ticket: Ticket, one_review: Review, other_user: User) -> None:
+    connected_client, connected_user = connect_client
+    Review.objects.create(headline='critique à supprimer',
+                          body='description',
+                          rating=4,
+                          user=other_user,
+                          ticket=one_ticket)
+    response = connected_client.delete(reverse('library:delete_review', args=[2]))
+    assert response.content == b"Vous ne pouvez supprimer une critique dont vous n'\xc3\xaates pas l'auteur.<br>            <a href='../../../posts/'>Retour</a>"
 
 def test_modify_review_view(connect_client: Client, one_review: Review) -> None:
     connected_client, connected_user = connect_client
@@ -277,3 +299,24 @@ def test_review_update_response_invalid(connect_client: Client, one_review: Revi
 
 # ######################################################################## #
 # #######################  TESTS Following users ######################### #
+
+def test_userfollows_creation(connect_client: Client, third_user: User) -> None:
+    connected_client, connected_user = connect_client
+    userfollows_count = UserFollows.objects.count()
+    connected_client.post(reverse('library:following'),
+                          data={'followed_user': third_user,
+                                'user': connected_user})
+    assert UserFollows.objects.count() == userfollows_count + 1
+
+def test_delete_userfollows_view(connect_client: Client, third_user: User) -> None:
+    connected_client, connected_user = connect_client
+    UserFollows.objects.create(followed_user=third_user, user=connected_user)
+    response = connected_client.delete(reverse('library:delete_subscription', args=[1]))
+    assert response.status_code == 302
+
+def test_delete_userfollows_error(connect_client: Client, third_user: User, other_user: User) -> None:
+    connected_client, connected_user = connect_client
+    UserFollows.objects.create(followed_user=third_user, user=other_user)
+    response = connected_client.delete(reverse('library:delete_subscription', args=[1]))
+    print(response.content)
+    assert response.content == b"Vous ne pouvez pas supprimer un utilisateur que vous ne suivez pas.<br>                <a href='../../../following/'>Retour</a>"

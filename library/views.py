@@ -1,6 +1,6 @@
 from itertools import chain
 from typing import Dict
-from django.http.response import HttpResponse, HttpResponseRedirect
+from django.http.response import HttpResponse, Http404
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.shortcuts import render, redirect
@@ -128,7 +128,7 @@ def post_modification_ticket(request, ticket_id) -> HttpResponse:
 
 @login_required(login_url='/')
 def ticket_deletion(request, ticket_id) -> HttpResponse:
-    ticket = Ticket.objects.filter(id=ticket_id)
+    ticket = Ticket.objects.get(id=ticket_id)
     if ticket.user != request.user:
         return HttpResponse("Vous ne pouvez supprimer un ticket dont vous n'êtes pas l'auteur.<br>\
             <a href='../../../posts/'>Retour</a>")
@@ -138,9 +138,9 @@ def ticket_deletion(request, ticket_id) -> HttpResponse:
 
 @login_required(login_url='/')
 def review_deletion(request, review_id) -> HttpResponse:
-    review = Review.objects.filter(id=review_id)
+    review = Review.objects.get(id=review_id)
     if review.user != request.user:
-        return HttpResponse("Vous ne pouvez supprimer un ticket dont vous n'êtes pas l'auteur.<br>\
+        return HttpResponse("Vous ne pouvez supprimer une critique dont vous n'êtes pas l'auteur.<br>\
             <a href='../../../posts/'>Retour</a>")
     else:
         Review.objects.filter(id=review_id).delete()
@@ -174,7 +174,7 @@ def post_modification_review(request, review_id) -> HttpResponse:
 class FollowingView(LoginRequiredMixin, CreateView):
     model = UserFollows
     fields = ['followed_user']
-    success_url = '../../../following/'
+    success_url = reverse_lazy('library:following')
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
@@ -189,21 +189,33 @@ class FollowingView(LoginRequiredMixin, CreateView):
         If the form is valid, redirect to the supplied URL
         """
         context = self.get_context_data(**kwargs)
+        print('vavavavavavavavavavavavavavavavav')
         model_instance = form.save(commit=False)
         model_instance.user = self.request.user
         user_subscriptions = UserFollows.objects.filter(user=self.request.user,
                                                         followed_user=model_instance.followed_user)
-        print('user: ', user_subscriptions)
         if model_instance.followed_user == self.request.user:
             return HttpResponse("Vous ne pouvez pas vous suivre vous même.<br>\
                 <a href='../../../following/'>Retour</a>")
-        elif UserFollows.objects.filter(user=self.request.user, followed_user=model_instance.followed_user):
+        if UserFollows.objects.filter(user=self.request.user, followed_user=model_instance.followed_user):
             return HttpResponse("Vous suivez déjà cet utilisateur.<br> <a href='../../../following/'>Retour</a>")
         else:
             model_instance.save()
             return super().form_valid(form)
 
+    def form_invalid(self, form, **kwargs) -> HttpResponse:
+        print('invalid-invalid-invalid-invalid-invalid-invalid')
+        return super().form_invalid(form)
+
 class SubscriptionDeletionView(LoginRequiredMixin, DeleteView):
     model = UserFollows
     pk_url_kwarg = 'userfollows_id'
-    success_url = '../../../following/'
+    success_url = reverse_lazy('library:following')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.user != request.user:
+            return HttpResponse("Vous ne pouvez pas supprimer un utilisateur que vous ne suivez pas.<br>\
+                <a href='../../../following/'>Retour</a>")
+        else:
+            return super(SubscriptionDeletionView, self).delete(request, *args, **kwargs)
