@@ -189,7 +189,6 @@ class FollowingView(LoginRequiredMixin, CreateView):
         If the form is valid, redirect to the supplied URL
         """
         context = self.get_context_data(**kwargs)
-        print('vavavavavavavavavavavavavavavavav')
         model_instance = form.save(commit=False)
         model_instance.user = self.request.user
         user_subscriptions = UserFollows.objects.filter(user=self.request.user,
@@ -203,9 +202,6 @@ class FollowingView(LoginRequiredMixin, CreateView):
             model_instance.save()
             return super().form_valid(form)
 
-    def form_invalid(self, form, **kwargs) -> HttpResponse:
-        print('invalid-invalid-invalid-invalid-invalid-invalid')
-        return super().form_invalid(form)
 
 class SubscriptionDeletionView(LoginRequiredMixin, DeleteView):
     model = UserFollows

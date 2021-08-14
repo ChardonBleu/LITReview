@@ -300,23 +300,47 @@ def test_review_update_response_invalid(connect_client: Client, one_review: Revi
 # ######################################################################## #
 # #######################  TESTS Following users ######################### #
 
-def test_userfollows_creation(connect_client: Client, third_user: User) -> None:
+def test_userfollows_creation(connect_client: Client, other_user: User, third_user: User) -> None:
     connected_client, connected_user = connect_client
     userfollows_count = UserFollows.objects.count()
     connected_client.post(reverse('library:following'),
-                          data={'followed_user': third_user,
+                          data={'followed_user': 2,
                                 'user': connected_user})
     assert UserFollows.objects.count() == userfollows_count + 1
+
+def test_userfollows_creation_error_oneself(connect_client: Client, other_user: User, third_user: User) -> None:
+    connected_client, connected_user = connect_client
+    response = connected_client.post(reverse('library:following'),
+                                     data={'followed_user': 1,
+                                           'user': connected_user})
+    assert response.content == b"Vous ne pouvez pas vous suivre vous m\xc3\xaame.<br>                <a href='../../../following/'>Retour</a>"
+
+def test_userfollows_creation_error_yetfollowed(connect_client: Client, user_follows_other_user: UserFollows, other_user: User) -> None:
+    connected_client, connected_user = connect_client
+    response = connected_client.post(reverse('library:following'),
+                                     data={'followed_user': 2,
+                                           'user': connected_user})
+    assert response.content == b"Vous suivez d\xc3\xa9j\xc3\xa0 cet utilisateur.<br> <a href='../../../following/'>Retour</a>"
+
+def test_userfollows_creation_invalid(connect_client: Client, other_user: User, third_user: User) -> None:
+    connected_client, connected_user = connect_client
+    userfollows_count = UserFollows.objects.count()
+    connected_client.post(reverse('library:following'),
+                          data={'followed_user': 'blabla',
+                                'user': connected_user})
+    assert UserFollows.objects.count() == userfollows_count + 0
 
 def test_delete_userfollows_view(connect_client: Client, third_user: User) -> None:
     connected_client, connected_user = connect_client
     UserFollows.objects.create(followed_user=third_user, user=connected_user)
+    userfollows_count_before = UserFollows.objects.count()
     response = connected_client.delete(reverse('library:delete_subscription', args=[1]))
+    userfollows_count_after = UserFollows.objects.count()
     assert response.status_code == 302
+    assert userfollows_count_after == userfollows_count_before - 1
 
 def test_delete_userfollows_error(connect_client: Client, third_user: User, other_user: User) -> None:
     connected_client, connected_user = connect_client
     UserFollows.objects.create(followed_user=third_user, user=other_user)
     response = connected_client.delete(reverse('library:delete_subscription', args=[1]))
-    print(response.content)
     assert response.content == b"Vous ne pouvez pas supprimer un utilisateur que vous ne suivez pas.<br>                <a href='../../../following/'>Retour</a>"
