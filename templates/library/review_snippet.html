@@ -14,7 +14,11 @@
     </div>
 
     <div>
-        <p>{{ post.headline }} - {{ post.rating }}</p>
+        <p>{{ post.headline }} - <span class={% if post.rating >= 1 %} "fa fa-star checked" {% else %} "fa fa-star" {% endif %}></span>
+                                 <span class={% if post.rating >= 2 %} "fa fa-star checked" {% else %} "fa fa-star" {% endif %}></span>
+                                 <span class={% if post.rating >= 3 %} "fa fa-star checked" {% else %} "fa fa-star" {% endif %}></span>
+                                 <span class={% if post.rating >= 4 %} "fa fa-star checked" {% else %} "fa fa-star" {% endif %}></span>
+                                 <span class={% if post.rating >= 5 %} "fa fa-star checked" {% else %} "fa fa-star" {% endif %}></span></p>
         <p>{{ post.body }}</p>
     </div>
     <div>
