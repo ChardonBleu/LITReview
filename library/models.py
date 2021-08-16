@@ -119,6 +119,12 @@ class Review(models.Model):
     deleted.
     * review creation date is automatically filled in.
     """
+    RATING_CHOICES = [
+        (1, '1'),
+        (2, '2'),
+        (3, '3'),
+        (4, '4'),
+        (5, '5')]
 
     ticket = models.ForeignKey(
         to=Ticket,
@@ -129,8 +135,8 @@ class Review(models.Model):
     rating = models.PositiveSmallIntegerField(
         # validates that rating must be between 0 and 5
         validators=[MinValueValidator(0), MaxValueValidator(5)],
-        help_text=_("Each review has a rating wich is an integer number between 0 and 5.")
-    )
+        choices=RATING_CHOICES,
+        help_text=_("Each review has a rating wich is an integer number between 0 and 5."))
     headline = models.CharField(
         max_length=128,
         help_text=_("The headline can't be blank. Headline max length is 128."))

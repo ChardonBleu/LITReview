@@ -178,10 +178,8 @@ class FollowingView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs) -> Dict:
         context = super().get_context_data(**kwargs)
-        user_subscriptions = UserFollows.objects.get_users_subscriptions(self.request)
-        user_followers = UserFollows.objects.get_users_followers(self.request)
-        context['subscriptions'] = user_subscriptions
-        context['followers'] = user_followers
+        context['subscriptions'] = UserFollows.objects.get_users_subscriptions(self.request)
+        context['followers'] = UserFollows.objects.get_users_followers(self.request)
         return context
 
     def form_valid(self, form, **kwargs) -> HttpResponse:
@@ -189,17 +187,15 @@ class FollowingView(LoginRequiredMixin, CreateView):
         If the form is valid, redirect to the supplied URL
         """
         context = self.get_context_data(**kwargs)
-        model_instance = form.save(commit=False)
-        model_instance.user = self.request.user
-        user_subscriptions = UserFollows.objects.filter(user=self.request.user,
-                                                        followed_user=model_instance.followed_user)
-        if model_instance.followed_user == self.request.user:
+        object = form.save(commit=False)
+        object.user = self.request.user
+        if object.followed_user == self.request.user:
             return HttpResponse("Vous ne pouvez pas vous suivre vous même.<br>\
 <a href='../../../following/'>Retour</a>")
-        if UserFollows.objects.filter(user=self.request.user, followed_user=model_instance.followed_user):
+        if UserFollows.objects.filter(user=self.request.user, followed_user=object.followed_user):
             return HttpResponse("Vous suivez déjà cet utilisateur.<br><a href='../../../following/'>Retour</a>")
         else:
-            model_instance.save()
+            self.object = object.save()
             return super().form_valid(form)
 
 
@@ -214,4 +210,4 @@ class SubscriptionDeletionView(LoginRequiredMixin, DeleteView):
             return HttpResponse("Vous ne pouvez pas supprimer un utilisateur que vous ne suivez pas.<br>\
 <a href='../../../following/'>Retour</a>")
         else:
-            return super(SubscriptionDeletionView, self).delete(request, *args, **kwargs)
+            return super().delete(request, *args, **kwargs)
