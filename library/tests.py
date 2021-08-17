@@ -6,7 +6,7 @@ from library.models import Ticket, Review, UserFollows
 from django.test import RequestFactory
 
 from account.models import User
-from library.views import FollowingView, posts
+from library.views import posts
 
 
 # ############################################################## #
