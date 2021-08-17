@@ -7,7 +7,6 @@ from .models import User
 from .forms import CustomUserCreationForm
 
 
-# Create your tests here.
 class TestUserView:
 
     def setup(self) -> None:
