@@ -1,5 +1,19 @@
-<form method="post">{% csrf_token %}
-    <p>Etes vous sûrs de vouloir supprimer le suivi de l'utilisateur "{{ object.followed_user.username }}"?</p>
-    <input type="submit" value="Confirmer">
-    <a href="{% url 'library:following' %}">Retour</a>
+{% extends 'base.html' %}
+{% block content %}
+
+<form method="post">
+{% csrf_token %}
+<div class="row">
+    <div class="col">
+        <p>Etes vous sûrs de vouloir supprimer le suivi de l'utilisateur "{{ object.followed_user.username }}"?</p>
+        <input type="submit" value="Confirmer">
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <a href="{% url 'library:following' %}">Retour</a>
+    </div>
+</div>
 </form>
+
+{% endblock %}

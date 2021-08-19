@@ -1,11 +1,6 @@
     <div class="row">
         <div class="col">
-            {% if user.get_username == post.user.username %}
-                <h3>Vous avez 
-            {% else %}
-                <h3>{{ post.user.username }} a 
-            {% endif %}
-            publié une critique</h3>
+            <h3> Vous avez publié une critique </h3>
         </div>
         <div class="col">
             {{ post.datetime_created|time:"H:i" }} {{ post.datetime_created|date:"d F Y" }}
@@ -31,11 +26,6 @@
             <div class="col">
                 {% if post.ticket.image %}
                     <p><img src="{{ post.ticket.image.url }}" alt="{{ post.ticket.title }}"></p>                      
-                {% endif %}
-            </div>
-            <div class="col">
-                {% if post.user != user %}                     
-                    <a href="{% url 'library:review_ticket' post.ticket.id %}">Créer une critique</a>                        
                 {% endif %}
             </div>
         </div>

@@ -1,40 +1,41 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <div>
-        <p>Créer un ticket</p>
+    <div class="row">
+        <div class="col">
+            <h2>Créer un ticket</h2>
+        </div>
     </div>
 
-    <div>
-        {% if user.is_authenticated %}
+{% if user.is_authenticated %}
 
-            <div>
-            {% if form.is_multipart %}
-                <form enctype="multipart/form-data" method="post">
-            {% else %}
-                <form method="post">
-            {% endif %}
-                {% csrf_token %}
+    {% if form.is_multipart %}
+        <form enctype="multipart/form-data" method="post">
+    {% else %}
+        <form method="post">
+    {% endif %}
+        {% csrf_token %}
+        <div class="row">
+            <div class="col">
+                <p>{{ form.non_field_errors }}</p>
+                <p>{{ form.title.label }} {{ form.title.errors }}</p>                    
+                <p>{{ form.title }}</p>
 
-                {{ form.non_field_errors }}
-                <div>
-                    <p>{{ form.title.label }} {{ form.title.errors }}</p>                    
-                    <p>{{ form.title }}</p>
+                <p>{{ form.description.label }} {{ form.description.errors }}</p>                    
+                <p>{{ form.description }}</p>
 
-                    <p>{{ form.description.label }} {{ form.description.errors }}</p>                    
-                    <p>{{ form.description }}</p>
+                <p>{{ form.image.label }} {{ form.image.errors }}</p>                    
+                <p>{{ form.image }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <input type="submit" value="Envoyer">
+            </div>
+        </div>
 
-                    <p>{{ form.image.label }} {{ form.image.errors }}</p>                    
-                    <p>{{ form.image }}</p>
-                </div>
+        </form>
 
-                <div>
-                    <input type="submit" value="Envoyer">
-                </div>
-
-            </form>
-            <div>
-        {% endif %}
-    </div>
+{% endif %}
 
 {% endblock %}
