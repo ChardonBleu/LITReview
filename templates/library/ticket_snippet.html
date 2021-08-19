@@ -1,26 +1,36 @@
 
-<div class="container">
+
     <div class="row">
-        <span>
+        <div class="col">
             {% if user.get_username == post.user.username %}
                 Vous avez 
             {% else %}
                 {{ post.user.username }} a 
             {% endif %}
             demandé une critique
-        </span>
-        <span>{{ post.datetime_created|time:"H:i" }} {{ post.datetime_created|date:"d F Y" }}</span>
+        </div>
+        <div class="col">
+            {{ post.datetime_created|time:"H:i" }} {{ post.datetime_created|date:"d F Y" }}
+        </div>
     </div>
+
     <div class="row">
         <p>{{post.title}}</p>
         <p>{{post.description}}</p>
-    </div>         
-    {% if post.image %}
+    </div>
 
     <div class="row">
-        <img src="{{ post.image.url }}" alt="{{ post.title }}"></img>
+        <div class="col">    
+            {% if post.image %}    
+                <img src="{{ post.image.url }}" alt="{{ post.title }}"></img>
+            {% endif %}
+        </div>
+
+        <div class="col">
+            {% if post.related_review == False %}
+                <a href="{% url 'library:review_ticket' post.id %}">Créer une critique</a>
+            {% endif %}
+        </div>
     </div>
-                    
-    {% endif %}
                 
-</div>
+

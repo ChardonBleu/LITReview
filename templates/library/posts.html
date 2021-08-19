@@ -1,14 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <div>
-        <p> Vos Posts </p>
+    <div class="container">
+        <div class="row">
+            <div class="col"> 
+                <p> Vos Posts </p>
+            </div>
+        </div>
     </div>
 
-    <div>
-
-        {% for post in posts %}
-
+    {% for post in posts %}
+        <div class="container post">
             {% if post.content_type == 'TICKET' %}
                 {% include 'library/ticket_snippet.html' %}
                 <a href="{% url 'library:modify_ticket' post.id %}">Modifier</a> | 
@@ -19,9 +21,7 @@
                 <a href="{% url 'library:delete_review' post.id %}">Supprimer</a> 
 
             {% endif %}
-
-        {% endfor %}
-
-    </div>
+        </div>
+    {% endfor %}
 
 {% endblock %}

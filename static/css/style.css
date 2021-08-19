@@ -1,8 +1,10 @@
-.container {
+.post {
     border: solid 1px black;
 }
 
-
+.ticket {
+    border: solid 1px black;
+}
 
 .bi-star-fill {
     color: cornflowerblue;

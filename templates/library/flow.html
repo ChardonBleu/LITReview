@@ -1,31 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <div class="row">
-        <div class="col-3"><a href="{% url 'library:ticket_creation' %}">Demander une critique</a></div>
-        <div class="col-9"><a href="{% url 'library:review_creation' %}">Créer une critique</a></div>
+    <div class="container">
+        <div class="row">
+            <div class="col"><a href="{% url 'library:ticket_creation' %}">Demander une critique</a></div>
+            <div class="col"><a href="{% url 'library:review_creation' %}">Créer une critique</a></div>
+        </div>
     </div>
 
-    <div class="row">
 
-        {% for post in posts %}
+    {% for post in posts %}
+        <div class="container post">
             {% if post.content_type == 'TICKET' %}
                 {% include 'library/ticket_snippet.html' %}
-                    {% if post.related_review == False %}
-                        <div>
-                            <a href="{% url 'library:review_ticket' post.id %}">Créer une critique</a>
-                        </div>
-                    {% endif %}
+
             {% elif post.content_type == 'REVIEW' %}
                 {% include 'library/review_snippet.html' %}
-                    {% if post.user != user %}
-                        <div>
-                            <a href="{% url 'library:review_ticket' post.ticket.id %}">Créer une critique</a>
-                        </div>
-                    {% endif %}
-            {% endif %}
-        {% endfor %}
 
-    </div>
+            {% endif %}
+        </div>
+    {% endfor %}
 
 {% endblock %}
