@@ -1,7 +1,6 @@
 
-<div>
-    <p>***************************************</p>
-    <div>
+<div class="container">
+    <div class="row">
         <span>
             {% if user.get_username == post.user.username %}
                 Vous avez 
@@ -12,15 +11,15 @@
         </span>
         <span>{{ post.datetime_created|time:"H:i" }} {{ post.datetime_created|date:"d F Y" }}</span>
     </div>
-
-    <p>{{post.title}}</p>
-    <p>{{post.description}}</p>
-                
+    <div class="row">
+        <p>{{post.title}}</p>
+        <p>{{post.description}}</p>
+    </div>         
     {% if post.image %}
 
-        <div>
+    <div class="row">
         <img src="{{ post.image.url }}" alt="{{ post.title }}"></img>
-        </div>
+    </div>
                     
     {% endif %}
                 

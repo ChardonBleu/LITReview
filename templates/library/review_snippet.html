@@ -1,7 +1,7 @@
 
-<div>
-    <p>********************************************</p>
-    <div>
+<div class="container">
+
+    <div class="row">
         <span>
             {% if user.get_username == post.user.username %}
                 Vous avez 
@@ -13,25 +13,22 @@
         <span>{{ post.datetime_created|time:"H:i" }} {{ post.datetime_created|date:"d F Y" }}</span>
     </div>
 
-    <div>
-        <p>{{ post.headline }} - <span class={% if post.rating >= 1 %} "fa fa-star checked" {% else %} "fa fa-star" {% endif %}></span>
-                                 <span class={% if post.rating >= 2 %} "fa fa-star checked" {% else %} "fa fa-star" {% endif %}></span>
-                                 <span class={% if post.rating >= 3 %} "fa fa-star checked" {% else %} "fa fa-star" {% endif %}></span>
-                                 <span class={% if post.rating >= 4 %} "fa fa-star checked" {% else %} "fa fa-star" {% endif %}></span>
-                                 <span class={% if post.rating >= 5 %} "fa fa-star checked" {% else %} "fa fa-star" {% endif %}></span></p>
+    <div class="row">
+        <p>{{ post.headline }} - <span class={% if post.rating >= 1 %} "bi bi-star-fill checked" {% else %} "bi bi-star-fill" {% endif %}></span>
+                                 <span class={% if post.rating >= 2 %} "bi bi-star-fill checked" {% else %} "bi bi-star-fill" {% endif %}></span>
+                                 <span class={% if post.rating >= 3 %} "bi bi-star-fill checked" {% else %} "bi bi-star-fill" {% endif %}></span>
+                                 <span class={% if post.rating >= 4 %} "bi bi-star-fill checked" {% else %} "bi bi-star-fill" {% endif %}></span>
+                                 <span class={% if post.rating >= 5 %} "bi bi-star-fill checked" {% else %} "bi bi-star-fill" {% endif %}></span></p>
         <p>{{ post.body }}</p>
     </div>
-    <div>
-        <p>_________________________________________</p>
+    <div class="row">
 
         <p>Ticket - {{ post.ticket.user.username }}</p>
 
         <p>{{ post.ticket.title }}</p>
-                    
-        {% if post.ticket.image %}
-            <div><img src="{{ post.ticket.image.url }}" alt="{{ post.ticket.title }}"></img></div>
-                        
-        {% endif %}
-                    
     </div>
+    {% if post.ticket.image %}
+        <div class="row"><img src="{{ post.ticket.image.url }}" alt="{{ post.ticket.title }}"></img></div>                        
+    {% endif %}
+
 </div>
