@@ -1,0 +1,13 @@
+.framed {
+    border: solid 1px black;
+}
+
+.bi-star-fill {
+    color: rgb(7, 13, 24);
+    }
+
+.checked {
+    color: orange;
+    }
+
+ 

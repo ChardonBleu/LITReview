@@ -16,8 +16,16 @@ from .forms import TicketForm, ReviewForm
 
 @login_required(login_url='/')
 def flow(request) -> HttpResponse:
-    """group all tickets and  review for flow.
+    """group all tickets and  review for flow:
+    Users can see the tickets and reviews of all users they follow.
+    They should also see their own tickets and reviews, as well as any reviews in response to their own tickets
+    even if they do not follow the reviewer.
 
+    Arguments:
+        request {HttpRequest} --  HttpRequest object that contains metadata about the request
+
+    Returns:
+        HttpResponse -- template: library/flow.html / context: result of query on tickets and reviews
     """
     tickets = Ticket.objects.get_users_viewable_tickets(request)
     reviews = Review.objects.get_users_viewable_reviews(request)
@@ -31,7 +39,14 @@ def flow(request) -> HttpResponse:
 
 @login_required(login_url='/')
 def ticket_creation(request) -> HttpResponse:
-    """group all tickets and  review for flow.
+    """Creation of a new ticket
+
+    Arguments:
+        request {HttpRequest} --  HttpRequest object that contains metadata about the request
+
+    Returns:
+        HttpResponse -- template: library/ticket.html / context: ticketform
+
     """
     if request.method == "POST":
         form = TicketForm(request.POST, request.FILES)
@@ -48,6 +63,14 @@ def ticket_creation(request) -> HttpResponse:
 
 @login_required(login_url='/')
 def review_creation(request) -> HttpResponse:
+    """creation of a new review
+
+    Arguments:
+        request {HttpRequest} --  HttpRequest object that contains metadata about the request
+
+    Returns:
+        HttpResponse -- template: library/review.html / context: reviewform
+    """
 
     if request.method == "POST":
         ticket_form = TicketForm(request.POST, request.FILES)
@@ -72,6 +95,15 @@ def review_creation(request) -> HttpResponse:
 
 @login_required(login_url='/')
 def review_for_ticket(request, ticket_id) -> HttpResponse:
+    """new review for an existing ticket
+
+    Arguments:
+        request {HttpRequest} --  HttpRequest object that contains metadata about the request
+        ticket_id {int} -- ticket id related to new review
+
+    Returns:
+        HttpResponse -- template: library/review_ticket.html / context: reviewform and related ticket datas
+    """
     ticket = Ticket.objects.get(id=ticket_id)
 
     if request.method == "POST":
@@ -92,6 +124,14 @@ def review_for_ticket(request, ticket_id) -> HttpResponse:
 
 @login_required(login_url='/')
 def posts(request) -> HttpResponse:
+    """user's tickets an reviews
+
+    Arguments:
+        request {HttpRequest} --  HttpRequest object that contains metadata about the request
+
+    Returns:
+        HttpResponse -- template: library/posts.html / context: user's tickets an reviews
+    """
     tickets = Ticket.objects.get_own_tickets(request)
     reviews = Review.objects.get_own_reviews(request)
 
@@ -104,6 +144,15 @@ def posts(request) -> HttpResponse:
 
 @login_required(login_url='/')
 def post_modification_ticket(request, ticket_id) -> HttpResponse:
+    """user's modifiation ticket
+
+    Arguments:
+        request {HttpRequest} --  HttpRequest object that contains metadata about the request
+        ticket_id {int} -- ticket id for modification
+
+    Returns:
+        HttpResponse -- template: library/modify_ticket.html / context : ticketform and non modified ticket datas
+    """
     ticket = Ticket.objects.get(id=ticket_id)
     if ticket.user != request.user:
         return HttpResponse("Vous ne pouvez modifier un ticket dont vous n'êtes pas l'auteur.<br>\
@@ -128,6 +177,15 @@ def post_modification_ticket(request, ticket_id) -> HttpResponse:
 
 @login_required(login_url='/')
 def ticket_deletion(request, ticket_id) -> HttpResponse:
+    """user's ticket deletion
+
+    Arguments:
+        request {HttpRequest} -- HttpRequest object that contains metadata about the request
+        ticket_id {int} -- ticket id for deletion
+
+    Returns:
+        HttpResponse -- template: library/posts.html by redirection
+    """
     ticket = Ticket.objects.get(id=ticket_id)
     if ticket.user != request.user:
         return HttpResponse("Vous ne pouvez supprimer un ticket dont vous n'êtes pas l'auteur.<br>\
@@ -138,6 +196,15 @@ def ticket_deletion(request, ticket_id) -> HttpResponse:
 
 @login_required(login_url='/')
 def review_deletion(request, review_id) -> HttpResponse:
+    """user's review deletion
+
+    Arguments:
+        request {HttpRequest} -- HttpRequest object that contains metadata about the request
+        review_id {int} -- review id for deletion
+
+    Returns:
+        HttpResponse -- template: library/posts.html by redirection
+    """
     review = Review.objects.get(id=review_id)
     if review.user != request.user:
         return HttpResponse("Vous ne pouvez supprimer une critique dont vous n'êtes pas l'auteur.<br>\
@@ -148,6 +215,15 @@ def review_deletion(request, review_id) -> HttpResponse:
 
 @login_required(login_url='/')
 def post_modification_review(request, review_id) -> HttpResponse:
+    """user's modifiation review
+
+    Arguments:
+        request {HttpRequest} --  HttpRequest object that contains metadata about the request
+        review_id {int} -- review id for modification
+
+    Returns:
+        HttpResponse -- template: library/modify_review.html / context : reviewform and non modified review datas
+    """
     review = Review.objects.get(id=review_id)
     if review.user != request.user:
         return HttpResponse("Vous ne pouvez modifier une critique dont vous n'êtes pas l'auteur.<br>\
@@ -172,46 +248,56 @@ def post_modification_review(request, review_id) -> HttpResponse:
 
 
 class FollowingView(LoginRequiredMixin, CreateView):
+    """List of followed users and adding form of a followed user.
+    List of following users.
+    """
     model = UserFollows
     fields = ['followed_user']
     success_url = reverse_lazy('library:following')
 
     def get_context_data(self, **kwargs) -> Dict:
+        """generic Create view has creat form in charge.
+        We want to add in context followed and following users.
+
+        Returns:
+            Dict -- subscriptions and following users
+        """
         context = super().get_context_data(**kwargs)
-        user_subscriptions = UserFollows.objects.get_users_subscriptions(self.request)
-        user_followers = UserFollows.objects.get_users_followers(self.request)
-        context['subscriptions'] = user_subscriptions
-        context['followers'] = user_followers
+        context['subscriptions'] = UserFollows.objects.get_users_subscriptions(self.request)
+        context['followers'] = UserFollows.objects.get_users_followers(self.request)
         return context
 
     def form_valid(self, form, **kwargs) -> HttpResponse:
         """
-        If the form is valid, redirect to the supplied URL
+        If the form is valid, redirect to the supplied URL:
+        A user can't follow himself and a user can't aks following someone he's yet following
         """
         context = self.get_context_data(**kwargs)
-        model_instance = form.save(commit=False)
-        model_instance.user = self.request.user
-        user_subscriptions = UserFollows.objects.filter(user=self.request.user,
-                                                        followed_user=model_instance.followed_user)
-        if model_instance.followed_user == self.request.user:
+        object = form.save(commit=False)
+        object.user = self.request.user
+        if object.followed_user == self.request.user:
             return HttpResponse("Vous ne pouvez pas vous suivre vous même.<br>\
 <a href='../../../following/'>Retour</a>")
-        if UserFollows.objects.filter(user=self.request.user, followed_user=model_instance.followed_user):
+        if UserFollows.objects.filter(user=self.request.user, followed_user=object.followed_user):
             return HttpResponse("Vous suivez déjà cet utilisateur.<br><a href='../../../following/'>Retour</a>")
         else:
-            model_instance.save()
+            self.object = object.save()
             return super().form_valid(form)
 
 
 class SubscriptionDeletionView(LoginRequiredMixin, DeleteView):
+    """Deletion of subscription using generic delete view
+    """
     model = UserFollows
     pk_url_kwarg = 'userfollows_id'
     success_url = reverse_lazy('library:following')
 
     def delete(self, request, *args, **kwargs):
+        """A user can't delete a subscription if he's not the authenticated user.
+        """
         self.object = self.get_object()
         if self.object.user != request.user:
             return HttpResponse("Vous ne pouvez pas supprimer un utilisateur que vous ne suivez pas.<br>\
 <a href='../../../following/'>Retour</a>")
         else:
-            return super(SubscriptionDeletionView, self).delete(request, *args, **kwargs)
+            return super().delete(request, *args, **kwargs)

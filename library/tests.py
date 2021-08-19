@@ -1,14 +1,12 @@
-from django.urls.base import reverse_lazy
 import pytest
 
 from django.urls import reverse
-from django.utils.functional import lazy
 from django.test import Client
 from library.models import Ticket, Review, UserFollows
 from django.test import RequestFactory
 
 from account.models import User
-from library.views import FollowingView, posts
+from library.views import posts
 
 
 # ############################################################## #

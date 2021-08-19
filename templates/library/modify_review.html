@@ -1,67 +1,72 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <div>
-        <p>Modifier une critique</p>
-    </div>            
-
-        {% if user.is_authenticated %}
-
-            <div>
-            <p>Vous êtes en train de poster en réponse à</p>
-                <div>
-                    <p>***************************************</p>
-                    <div>
-                        <span>
-                            {% if user.get_username == review.ticket.user.username %}
-                                Vous avez 
-                            {% else %}
-                                {{ review.ticket.user.username }} a 
-                            {% endif %}
-                            demandé une critique
-                        </span>
-                        <span>{{ review.ticket.datetime_created|time:"H:i" }} {{ review.ticket.datetime_created|date:"d F Y" }}</span>
-                    </div>
-
-                    <p>{{review.ticket.title}}</p>
-                    <p>{{review.ticket.description}}</p>
-                                
-                    {% if review.ticket.image %}
-
-                        <div>
-                        <img src="{{ review.ticket.image.url }}" alt="{{ review.ticket.title }}"></img>
-                        </div>
-                                    
+<div class="row">
+    <div class="col">
+        <h2>Modifier votre critique</h2>
+    </div>
+</div>
+{% if user.is_authenticated %}
+<div class="container framed">
+    
+    <h3>Vous êtes en train de poster en réponse à</h3>
+        <div class='container framed'>
+            <div class="row">
+                <div class="col">
+                    {% if user.get_username == review.ticket.user.username %}
+                        <p>Vous avez 
+                    {% else %}
+                        <p>{{ review.ticket.user.username }} a 
                     {% endif %}
-                                
+                        demandé une critique </p>
+                </div>            
+                <div class="col">
+                    {{ review.ticket.datetime_created|time:"H:i" }} {{ review.ticket.datetime_created|date:"d F Y" }}
                 </div>
             </div>
 
-            <div>
-                <p>Critique</p>
-                <form method="post">
-                {% csrf_token %}
-                    {{ form.non_field_errors }} 
-                    <div>
-                        <p>{{ form.headline.label }} {{ form.headline.errors }}</p>                    
-                        <p>{{ form.headline }}</p>
-
-                        <p>{{ form.rating.label }} {{ form.rating.errors }}</p>                    
-                        <p>{{ form.rating }}</p>
-
-                        <p>{{ form.body.label }} {{ form.body.errors }}</p>                    
-                        <p>{{ form.body }}</p>
-
-                    </div>
-
-                    <div>
-                        <input type="submit" value="Envoyer">
-                    </div>
-
-                </form>
-
+            <div class="row">
+                <div class="col">
+                    <p>{{review.ticket.title}}</p>
+                    <p>{{review.ticket.description}}</p>
+                                    
+                    {% if review.ticket.image %}
+                    <p><img src="{{ review.ticket.image.url }}" alt="{{ review.ticket.title }}"></img></p>                                    
+                    {% endif %}                                
+                </div>
             </div>
 
-        {% endif %}
+<div class="container framed">
+    <div class="row">
+        <div class="col">
+            <h2>Critique</h2>
+        </div>
+    </div>
+    <form method="post">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col">
+            <p>{{ form.non_field_errors }}</p>
+
+            <p>{{ form.headline.label }} {{ form.headline.errors }}</p>                    
+            <p>{{ form.headline }}</p>
+
+            <p>{{ form.rating.label }} {{ form.rating.errors }}</p>                    
+            <p>{{ form.rating }}</p>
+
+            <p>{{ form.body.label }} {{ form.body.errors }}</p>                    
+            <p>{{ form.body }}</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <input type="submit" value="Envoyer">
+        </div>
+    </div>
+
+    </form>
+
+{% endif %}
 
 {% endblock %}
