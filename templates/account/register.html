@@ -1,20 +1,20 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="row">
-
-    <div class="col">
-        <form method="POST">
-            {% csrf_token %}
-            <div>
-                <p>Inscrivez-vous:</p>
-                {{ form.as_p }}
-            </div>
-            <div>
-                <a href="{% url 'account:login' %}">Retour</a> | 
-                <input type="submit" value="S'inscrire">
-            </div>
-        </form>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <form method="POST">
+                {% csrf_token %}
+                <div>
+                    <p>Inscrivez-vous:</p>
+                    {{ form.as_p }}
+                </div>
+                <div>
+                    <a href="{% url 'account:login' %}">Retour</a> | 
+                    <input type="submit" value="S'inscrire">
+                </div>
+            </form>
+        </div>
     </div>
-
 </div>
 {% endblock %}

@@ -11,15 +11,18 @@
     font-size: 1.1em;
     color: rgb(135, 227, 255);  
     text-decoration:none;
-
 }
 
 .first-bg-dark {
     background-color: rgb(36, 61, 68);
     }
 
+.first-txt-dark {
+    color: rgb(36, 61, 68);
+    }
+
 .checked {
-    color: orange;
+    color: rgb(135, 227, 255);;
     }
 
 .custom-toggler .navbar-toggler-icon {

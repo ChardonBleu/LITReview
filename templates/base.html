@@ -14,8 +14,8 @@
 
     </head>
 
-    <body>
-        <header class="first-bg-dark">
+    <body class="min-vh-100">
+        <header class="first-bg-dark sticky-top">
             <div class="container-fluid">
                 <div class="row">
                     <nav class="col navbar navbar-expand-lg">                            
@@ -43,23 +43,36 @@
                             </ul>
                         </div>
                     </nav>
-                </div>                
+                </div>       
             </div>
         </header>
 
-        <div class="container">
-            <div class="row"> 
-                <div class="col">                    
-                    {% if user.is_authenticated %}
-                        <p  class="text-right">Compte de {{ user.get_username }}</p>
-                    {% endif %}
+        <div class="min-vh-100">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        {% if user.is_authenticated %}
+                        <p  class="text-right first-txt-dark">Compte de {{ user.upper_name }}</p>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-            {% block content %}
-            {% endblock %}
+
+                {% block content %}
+                {% endblock %}
+  
         </div>
 
-        <footer class="container-fluid">
+        <footer class="first-bg-dark">
+            <div class="container-fluid">
+                <div class="row ">
+                    <div class="col">
+                        {% if user.is_authenticated %}
+                            <p  class="text-right first-txt-light align-middle">Compte de {{ user.upper_name }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </footer>
         
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
