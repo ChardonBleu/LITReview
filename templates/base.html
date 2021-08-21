@@ -16,17 +16,32 @@
         
         <header class="container-fluid">
             <div class="row">
-                <div class="col">                    
+                <div class="col-sm-6 col-lg-7">                    
                     <h1><img src="{% static 'images/logo.png' %}"> </img>LITReview</h1>
                 </div>
-                <nav class="col">
-                    <a href="{% url 'library:flow' %}">Flux</a> | 
-                    <a href="{% url 'library:posts' %}">Posts</a> | 
-                    <a href="{% url 'library:following' %}">Abonnements</a> | 
-                    <a href="{% url 'account:logout' %}">Se deconnecter</a> | 
-                    {% if user.is_authenticated %}
-                        <span>Compte de {{ user.get_username }}</span>
-                    {% endif %}
+                <nav class="col-sm-6 col-lg-5">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-1">
+                            <a href="{% url 'library:flow' %}">Flux</a>
+                        </div>
+                        <div class="col-sm-12 col-md-2">
+                            <a href="{% url 'library:posts' %}">Posts</a>
+                        </div>
+                        <div class="col-sm-12 col-md-4">                        
+                            <a href="{% url 'library:following' %}">Abonnements</a>
+                        </div>
+                        <div class="col-sm-12 col-md-5">                        
+                            <a href="{% url 'account:logout' %}">Se deconnecter</a>
+                        </div>
+                    </div>
+                    <div class="row"> 
+                        <div class="col">                    
+                            {% if user.is_authenticated %}
+                                <span>Compte de {{ user.get_username }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    </div>
                 </nav>
                 
             </div>      
