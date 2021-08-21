@@ -139,3 +139,5 @@ AUTH_USER_MODEL = "account.User"
 LOGOUT_REDIRECT_URL = '/account/'
 
 LOGIN_REDIRECT_URL = '/flow/'
+
+LOGIN_URL = '/'
