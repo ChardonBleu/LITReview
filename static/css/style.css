@@ -2,12 +2,30 @@
     border: solid 1px black;
 }
 
-.bi-star-fill {
-    color: rgb(7, 13, 24);
+.first-txt-light {
+    color: rgb(135, 227, 255);    
+    transition: all 0.5s ease-out
+}
+
+.first-txt-light:hover {
+    font-size: 1.1em;
+    color: rgb(135, 227, 255);  
+    text-decoration:none;
+
+}
+
+.first-bg-dark {
+    background-color: rgb(36, 61, 68);
     }
 
 .checked {
     color: orange;
     }
 
- 
+.custom-toggler .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(135, 227, 255, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+    }
+      
+.custom-toggler.navbar-toggler {
+    border-color: rgb(135, 227, 255);
+    } 
