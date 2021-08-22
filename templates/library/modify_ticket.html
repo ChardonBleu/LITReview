@@ -2,7 +2,7 @@
 {% block content %}
 
 <div class="row">
-    <div class="col">
+    <div class="col text-center">
         <h2>Modifier votre ticket</h2>
     </div>
 </div>
@@ -35,12 +35,14 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col">
-        <a class="btn btn-secondary" href="{% url 'library:posts' %}" role="button">Retour</a>
-        <input class="btn btn-success" type="submit" value="Envoyer">
-    </div>
-</div>
+            <div class="row text-right">    
+                <div class="col">
+                    <input class="btn btn-success" type="submit" value="Envoyer">
+                </div>
+                <div class="col">
+                    <a class="btn btn-secondary btn-block" href="{% url 'library:posts' %}" role="button">Retour</a>
+                </div>
+            </div>
 
                 </form>
         {% endif %}

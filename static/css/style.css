@@ -2,6 +2,15 @@ input, textarea {
     width: 100%;
 }
 
+select {
+    width: 100%;
+    height: 40px;
+}
+
+.custom-jumbo{
+    margin-top: 50px;
+}
+
 .radio{
     display:inline-block;
     margin-left: 20px;   

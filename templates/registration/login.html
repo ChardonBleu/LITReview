@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container jumbotron">
+<div class="container jumbotron w-75 custom-jumbo">
     {% if user.is_authenticated %}
         <p>Bonjour, {{ user.username }}. Vous êtes bien connecté.</p>
     {% else %}
