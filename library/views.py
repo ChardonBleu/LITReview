@@ -1,6 +1,6 @@
 from itertools import chain
 from typing import Dict
-from django.http.response import HttpResponse, Http404
+from django.http.response import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.shortcuts import render, redirect

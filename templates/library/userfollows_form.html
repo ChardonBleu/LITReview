@@ -1,49 +1,51 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
+<div class="container jumbotron pt-3 pb-3">
     <div class="row">
-        <h3>Suivre d'autres utilisateurs</h3>
+        <div class="col text-center">
+            <h4>Suivre d'autres utilisateurs</h4>
+        </div>
     </div>            
     <form method="post">
-        <div class="row">
-            <div class="col">
-                {% csrf_token %}
-                {{ form }}
-            </div>
-            <div class="col">
-                <input type="submit" value="Envoyer">
-            </div>
+    <div class="row">
+        <div class="col-8">            
+            {% csrf_token %}
+            {{ form.followed_user }}
         </div>
+        <div class="col-4 text-right">
+            <input class="btn btn-success" type="submit" value="Envoyer">
+        </div>
+    </div>
     </form>
 </div>
 
-<div class="container">
+<div class="container jumbotron pt-3 pb-3">
     <div class="row">
-        <div class="col">
-            <h3>Abonnements</h3>
+        <div class="col text-center">
+            <h4>Abonnements</h4>
         </div>
     </div>    
     {% for subscription in subscriptions %}
-    <div class="row framed">
+    <div class="row border pt-3 pb-3">
         <div class="col">
             {{ subscription.followed_user.username }} <!-- le pseudo des utilisateurs qui suivent l'utilisateur connecté  -->
         </div>
-        <div class="col">
-            <a href="{% url 'library:delete_subscription' subscription.id %}">Désabonner</a>
+        <div class="col text-right">
+            <a class="btn btn-danger btn-sm" href="{% url 'library:delete_subscription' subscription.id %}" role="button">Désabonner</a>
         </div>
     </div>             
     {% endfor %}
 </div>
         
-<div class="container">
+<div class="container jumbotron pt-3 pb-3">
     <div class="row">
-        <div class="col">
-            <h3>Abonnés</h3>
+        <div class="col text-center">
+            <h4>Abonnés</h4>
         </div>
     </div>
     {% for follower in followers %}
-    <div class="row f">
+    <div class="row  border pt-3 pb-3">
         <div class="col">
             {{ follower.user.username }} <!-- le pseudo des utilisateurs qui suivent l'utilisateur connecté  -->
         </div>

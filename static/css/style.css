@@ -1,10 +1,35 @@
+input, textarea {
+    width: 100%;
+}
+
+select {
+    width: 100%;
+    height: 40px;
+}
+
+.custom-jumbo{
+    margin-top: 50px;
+}
+
+.radio{
+    display:inline-block;
+    margin-left: 20px;   
+}
+
 .framed {
     border: solid 1px black;
 }
 
+#logo {
+    width: 100px;
+    height: auto;
+    transition: width 0.8s ease-out; 
+    will-change: width;
+}
+
 .first-txt-light {
     color: rgb(135, 227, 255);    
-    transition: all 0.5s ease-out
+    transition: font-size 0.5s ease-out;
 }
 
 .first-txt-light:hover {
@@ -21,6 +46,11 @@
     color: rgb(36, 61, 68);
     }
 
+.second-txt-light {
+    color: rgb(135, 227, 255);    
+    }
+
+
 .checked {
     color: rgb(135, 227, 255);;
     }
@@ -31,4 +61,5 @@
       
 .custom-toggler.navbar-toggler {
     border-color: rgb(135, 227, 255);
-    } 
+    }
+

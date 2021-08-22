@@ -1,18 +1,22 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container">
+<div class="container jumbotron w-75 custom-jumbo">
     <div class="row">
-        <div class="col">
+        <div class="col text-center">
             <form method="POST">
                 {% csrf_token %}
                 <div>
-                    <p>Inscrivez-vous:</p>
+                    <h4>Inscrivez-vous:</h4>
                     {{ form.as_p }}
                 </div>
-                <div>
-                    <a href="{% url 'account:login' %}">Retour</a> | 
-                    <input type="submit" value="S'inscrire">
+            <div class="row text-right">
+                <div class="col">
+                    <input class="btn btn-success" type="submit" value="Envoyer">
                 </div>
+                <div class="col">
+                    <a class="btn btn-secondary btn-block" href="{% url 'account:login' %}" role="button">Retour</a>
+                </div>
+            </div>
             </form>
         </div>
     </div>

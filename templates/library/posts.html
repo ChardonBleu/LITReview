@@ -3,23 +3,30 @@
 
     <div class="container">
         <div class="row">
-            <div class="col"> 
+            <div class="col text-center"> 
                 <h2> Vos Posts </h2>
             </div>
         </div>
     </div>
 
     {% for post in posts %}
-        <div class="container framed">
+        <div class="container border pl-5 pr-5 pt-3 pb-3">
             {% if post.content_type == 'TICKET' %}
                 {% include 'library/ticket_post.html' %}
-                <a href="{% url 'library:modify_ticket' post.id %}">Modifier</a> | 
-                <a href="{% url 'library:delete_ticket' post.id %}">Supprimer</a>                  
+                <div class="row">
+                    <div class="col text-right">
+                        <a class="btn btn-warning" href="{% url 'library:modify_ticket' post.id %}" role="button">Modifier</a>
+                        <a class="btn btn-danger" href="{% url 'library:delete_ticket' post.id %}" role="button">Supprimer</a>
+                    </div>
+                </div>           
             {% elif post.content_type == 'REVIEW' %}
                 {% include 'library/review_post.html' %}
-                <a href="{% url 'library:modify_review' post.id %}">Modifier</a> | 
-                <a href="{% url 'library:delete_review' post.id %}">Supprimer</a> 
-
+                <div class="row">
+                    <div class="col text-right">
+                        <a class="btn btn-warning" href="{% url 'library:modify_review' post.id %}" role="button">Modifier</a>
+                        <a class="btn btn-danger" href="{% url 'library:delete_review' post.id %}" role="button">Supprimer</a> 
+                    </div>
+                </div>   
             {% endif %}
         </div>
     {% endfor %}
