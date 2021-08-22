@@ -18,9 +18,9 @@
         <header class="first-bg-dark sticky-top">
             <div class="container-fluid">
                 <div class="row">
-                    <nav class="col navbar navbar-expand-lg">                            
+                    <nav class="col navbar navbar-expand-md">                            
                         <a  class="navbar-brand" href="{% url 'account:login' %}">
-                            <img class="image-fluid" src="{% static 'images/logo-lg.png' %}"> </img>
+                            <img id="logo" src="{% static 'images/logo-lg.png' %}"> </img>
                             <hL class="first-txt-light">LITReview</h1>
                         </a>
                         <button class="navbar-toggler custom-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,7 @@
                     </div>
                 </div>
             </div>
-
+             
                 {% block content %}
                 {% endblock %}
   
@@ -82,5 +82,24 @@
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" 
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <script>
+
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+                              window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+
+        window.onscroll = function() {scrollFunction()};
+
+        function scrollFunction() {
+        if (document.body.scrollTop > 10 || document.documentElement.scrollTop > 10) {
+            document.getElementById("logo").style.width = "50px";
+            request
+        } else {
+            document.getElementById("logo").style.width = "200px";
+        }
+        }
+
+
+        </script>
+
     </body>
 </html>
