@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.db.models import CharField, Value
 from django.urls import reverse_lazy
+from django import forms
 from itertools import chain
 
 from django.db import models
@@ -120,6 +121,7 @@ class Review(models.Model):
     * review creation date is automatically filled in.
     """
     RATING_CHOICES = [
+        (0, '0'),
         (1, '1'),
         (2, '2'),
         (3, '3'),
@@ -140,7 +142,7 @@ class Review(models.Model):
     headline = models.CharField(
         max_length=128,
         help_text=_("The headline can't be blank. Headline max length is 128."))
-    body = models.CharField(
+    body = models.TextField(
         max_length=8192,
         blank=True,
         help_text=_("The body can be blank. Body max length is 8192."))

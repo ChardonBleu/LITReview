@@ -4,13 +4,13 @@
     
 {% if user.is_authenticated %}
 
-<div class="container framed">
+<div class="container">
     <div class="row">
         <div class="col">
-            <h3>Vous êtes en train de poster en réponse à</h3>
+            <h4>Vous êtes en train de poster en réponse à</h4>
         </div>
     </div>
-    <div class="container framed">
+    <div class="container jumbotron">
         <div class="row">
             <div class="col">
                 {% if user.get_username == post.user.username %}
@@ -36,9 +36,9 @@
     </div>
 </div>
 
-<div class="container framed">
+<div class="container">
     <div class="row">
-        <div class="col">
+        <div class="col pt-3">
             <h3>Critique</h3>
         </div>
     </div>
@@ -46,22 +46,35 @@
         {% csrf_token %}
         <div class="row">
             <div class="col">
-                <p>{{ review_form.non_field_errors }}</p>
-
-                <p>{{ review_form.headline.label }} {{ review_form.headline.errors }}</p>                    
-                <p>{{ review_form.headline }}</p>
-
-                <p>{{ review_form.rating.label }} {{ review_form.rating.errors }}</p>                    
-                <p>{{ review_form.rating }}</p>
-
-                <p>{{ review_form.body.label }} {{ review_form.body.errors }}</p>                    
-                <p>{{ review_form.body }}</p>
+                    <div class="form-group">
+                        {{ review_form.non_field_errors }}
+                    </div>
+                    <div class="form-group ">
+                        {{ review_form.headline.label }} {{ review_form.headline.errors }}<br>                   
+                        {{ review_form.headline }}
+                    </div>
+                   {{ review_form.rating.label}}<br>
+                        {% for radio in review_form.rating %}
+                            {% if radio.choice_label > '0' %}
+                                <label for="{{ radio.id_for_label }}">
+                                    
+                                <span class="radio">{{ radio.tag }}</span> -{{ radio.choice_label }}
+                                </label>
+                            {% endif %}
+                        {% endfor %}
+                    <div class="form-group ">
+                        {{ review_form.body.label }} {{ review_form.body.errors }}<br>                  
+                        {{ review_form.body }}
+                    </div>
             </div>
         </div>
 
         <div class="row">
             <div class="col">
-                <input type="submit" value="Envoyer">
+                <input class="btn btn-success" type="submit" value="Envoyer">
+            </div>
+            <div class="col">
+                <a class="btn btn-secondary btn-block" href="{% url 'library:flow' %}" role="button">Retour</a>
             </div>
         </div>
 

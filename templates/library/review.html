@@ -2,19 +2,19 @@
 {% block content %}
 
 <div class="row">
-    <div class="col">
+    <div class="col text-center">
         <h2>Créer une critique</h2>
     </div>
 </div>            
 
 {% if user.is_authenticated %}
 
-<div class="container framed">
-    <div class="row">
-        <div class="col">
-            <h3>Livre / Article</h3>
-        </div>
+
+<div class="row">
+    <div class="col">
+        <h4>Livre / Article</h4>
     </div>
+</div>
 
     {% if ticket_form.is_multipart %}
         <form enctype="multipart/form-data" method="post">
@@ -24,51 +24,70 @@
         {% csrf_token %}
         <div class="row">
             <div class="col">
-                <p>{{ ticket_form.non_field_errors }}</p>
-
-                <p>{{ ticket_form.title.label }} {{ ticket_form.title.errors }}</p>                    
-                <p>{{ ticket_form.title }}</p>
-
-                <p>{{ ticket_form.description.label }} {{ ticket_form.description.errors }}</p>                    
-                <p>{{ ticket_form.description }}</p>
-
-                <p>{{ ticket_form.image.label }} {{ ticket_form.image.errors }}</p>                    
-                <p>{{ ticket_form.image }}</p>
-            </div>
-        </div>
-</div>
-
-<div class="container framed">
-    <div class="row">
-        <div class="col">
-            <h3>Critique</h3>
-        </div>
-    </div>
-
-        <div class="row">
-            <div class="col">
-                <p>{{ review_form.non_field_errors }}</p>
-
-                <p>{{ review_form.headline.label }} {{ review_form.headline.errors }}</p>                    
-                <p>{{ review_form.headline }}</p>
-
-                <p>{{ review_form.rating.label }} {{ review_form.rating.errors }}</p>                    
-                <p>{{ review_form.rating }}</p>
-
-                <p>{{ review_form.body.label }} {{ review_form.body.errors }}</p>                    
-                <p>{{ review_form.body }}</p>
+                <div class="form-group ">
+                {{ ticket_form.non_field_errors }}
+                </div>
+                <div class="form-group ">
+                {{ ticket_form.title.label }} {{ ticket_form.title.errors }}       
+                {{ ticket_form.title }}
+                </div>
+                <div class="form-group ">
+                {{ ticket_form.description.label }} {{ ticket_form.description.errors }}                 
+                {{ ticket_form.description }}
+                </div>
+                <div class="form-group ">
+                {{ ticket_form.image.lab}}
+                </div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col">
-                <input type="submit" value="Envoyer">
+
+            <div class="row">
+                <div class="col pt-3">
+                    <h4>Critique</h4>
+                </div>
             </div>
-        </div>
+
+            <div class="row">
+                <div class="col form-group">
+                    <div class="form-group">
+                        {{ review_form.non_field_errors }}
+                    </div>
+                    <div class="form-group ">
+                        {{ review_form.headline.label }} {{ review_form.headline.errors }}<br>                   
+                        {{ review_form.headline }}
+                    </div>
+                    <div class="form-group">
+                        {{ review_form.rating.label}}<br>
+                        {% for radio in review_form.rating %}
+                            {% if radio.choice_label > '0' %}
+                                <label for="{{ radio.id_for_label }}">
+                                    
+                                <span class="radio">{{ radio.tag }}</span> -{{ radio.choice_label }}
+                                </label>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="form-group ">
+                        {{ review_form.body.label }} {{ review_form.body.errors }}<br>               
+                        {{ review_form.body }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row text-right">
+                <div class="col">
+                    <input class="btn btn-success" type="submit" value="Envoyer">
+                </div>
+                <div class="col">
+                    <a class="btn btn-secondary btn-block" href="{% url 'library:flow' %}" role="button">Retour</a>
+                </div>
+            </div>
+
 
         </form>
 
-</div>
+
 {% endif %}
 
 {% endblock %}

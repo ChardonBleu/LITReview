@@ -2,15 +2,15 @@
 {% block content %}
 
 <div class="row">
-    <div class="col">
+    <div class="col text-center">
         <h2>Modifier votre critique</h2>
     </div>
 </div>
 {% if user.is_authenticated %}
-<div class="container framed">
+<div class="container">
     
-    <h3>Vous êtes en train de poster en réponse à</h3>
-        <div class='container framed'>
+    <h4>Vous êtes en train de poster en réponse à</h4>
+        <div class='container jumbotron'>
             <div class="row">
                 <div class="col">
                     {% if user.get_username == review.ticket.user.username %}
@@ -35,35 +35,51 @@
                     {% endif %}                                
                 </div>
             </div>
+        </div>
 
-<div class="container framed">
+<div class="container">
     <div class="row">
         <div class="col">
-            <h2>Critique</h2>
+            <h4>Critique</h4>
         </div>
     </div>
     <form method="post">
     {% csrf_token %}
     <div class="row">
-        <div class="col">
-            <p>{{ form.non_field_errors }}</p>
-
-            <p>{{ form.headline.label }} {{ form.headline.errors }}</p>                    
-            <p>{{ form.headline }}</p>
-
-            <p>{{ form.rating.label }} {{ form.rating.errors }}</p>                    
-            <p>{{ form.rating }}</p>
-
-            <p>{{ form.body.label }} {{ form.body.errors }}</p>                    
-            <p>{{ form.body }}</p>
+        <div class="col form-group">
+            <div class="form-group">
+                {{ form.non_field_errors }}
+            </div>
+            <div class="form-group ">
+                {{ form.headline.label }} {{ form.headline.errors }}<br>                   
+                {{ form.headline }}
+            </div>
+            <div class="form-group">
+                {{ form.rating.label}}<br>
+                {% for radio in form.rating %}
+                    {% if radio.choice_label > '0' %}
+                        <label for="{{ radio.id_for_label }}">
+                                    
+                        <span class="radio">{{ radio.tag }}</span> -{{ radio.choice_label }}
+                        </label>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="form-group ">
+                {{ form.body.label }} {{ form.body.errors }}<br>               
+                {{ form.body }}
+            </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col">
-            <input type="submit" value="Envoyer">
-        </div>
-    </div>
+            <div class="row text-right">    
+                <div class="col">
+                    <input class="btn btn-success" type="submit" value="Envoyer">
+                </div>
+                <div class="col">
+                    <a class="btn btn-secondary btn-block" href="{% url 'library:posts' %}" role="button">Retour</a>
+                </div>
+            </div>
 
     </form>
 

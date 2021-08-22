@@ -1,4 +1,5 @@
 from django import forms
+from django.forms.widgets import RadioSelect
 from .models import Ticket, Review
 
 class TicketForm(forms.ModelForm):
@@ -22,3 +23,6 @@ class ReviewForm(forms.ModelForm):
         fields = ['headline',
                   'body',
                   'rating']
+        widgets = {
+            'rating': RadioSelect(attrs={'class': ' form-check form-check-inline'}),
+        }
