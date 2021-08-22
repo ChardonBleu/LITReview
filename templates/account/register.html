@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container">
+<div class="container jumbotron">
     <div class="row">
-        <div class="col">
+        <div class="col text-center">
             <form method="POST">
                 {% csrf_token %}
                 <div>
@@ -10,8 +10,8 @@
                     {{ form.as_p }}
                 </div>
                 <div>
-                    <a href="{% url 'account:login' %}">Retour</a> | 
-                    <input type="submit" value="S'inscrire">
+                    <a class="btn btn-secondary" href="{% url 'account:login' %}" role="button">Retour</a>    
+                    <input class="btn btn-success" type="submit" value="S'inscrire">
                 </div>
             </form>
         </div>

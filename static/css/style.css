@@ -3,7 +3,7 @@
 }
 
 #logo {
-    width: 150px;
+    width: 100px;
     height: auto;
     transition: width 0.8s ease-out; 
     will-change: width;
@@ -27,6 +27,11 @@
 .first-txt-dark {
     color: rgb(36, 61, 68);
     }
+
+.second-txt-light {
+    color: rgb(135, 227, 255);    
+    }
+
 
 .checked {
     color: rgb(135, 227, 255);;

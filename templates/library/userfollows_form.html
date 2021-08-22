@@ -11,8 +11,8 @@
                 {% csrf_token %}
                 {{ form }}
             </div>
-            <div class="col">
-                <input type="submit" value="Envoyer">
+            <div class="col text-right">
+                <input class="btn btn-success" type="submit" value="Envoyer">
             </div>
         </div>
     </form>
@@ -29,8 +29,8 @@
         <div class="col">
             {{ subscription.followed_user.username }} <!-- le pseudo des utilisateurs qui suivent l'utilisateur connecté  -->
         </div>
-        <div class="col">
-            <a href="{% url 'library:delete_subscription' subscription.id %}">Désabonner</a>
+        <div class="col text-right">
+            <a class="btn btn-danger btn-sm" href="{% url 'library:delete_subscription' subscription.id %}" role="button">Désabonner</a>
         </div>
     </div>             
     {% endfor %}

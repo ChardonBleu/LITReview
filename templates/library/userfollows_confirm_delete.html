@@ -5,13 +5,15 @@
 {% csrf_token %}
 <div class="row">
     <div class="col">
-        <p>Etes vous sûrs de vouloir supprimer le suivi de l'utilisateur "{{ object.followed_user.username }}"?</p>
-        <input type="submit" value="Confirmer">
+        <p class="alert alert-danger">Etes vous sûrs de vouloir supprimer le suivi de l'utilisateur "{{ object.followed_user.username }}"?</p>
+
     </div>
 </div>
 <div class="row">
     <div class="col">
-        <a href="{% url 'library:following' %}">Retour</a>
+        <a class="btn btn-secondary" href="{% url 'library:following' %}" role="button">Retour</a>
+        <input class="btn btn-success" class="btn btn-success" type="submit" value="Confirmer">
+
     </div>
 </div>
 </form>

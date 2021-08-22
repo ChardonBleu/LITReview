@@ -25,10 +25,12 @@
                 <img src="{{ post.image.url }}" alt="{{ post.title }}"></img>
             {% endif %}
         </div>
+    </div>
 
-        <div class="col">
+    <div class="row">
+        <div class="col text-right">
             {% if post.related_review == False %}
-                <a href="{% url 'library:review_ticket' post.id %}">Créer une critique</a>
+                <a class="btn btn-success" href="{% url 'library:review_ticket' post.id %}" rone="button">Créer une critique</a>
             {% endif %}
         </div>
     </div>

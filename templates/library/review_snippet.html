@@ -33,9 +33,11 @@
                     <p><img src="{{ post.ticket.image.url }}" alt="{{ post.ticket.title }}"></p>                      
                 {% endif %}
             </div>
-            <div class="col">
+        </div>
+        <div class="row text-right">
+            <div class="col align-bottom">
                 {% if post.user != user %}                     
-                    <a href="{% url 'library:review_ticket' post.ticket.id %}">Créer une critique</a>                        
+                    <a class="btn btn-success" href="{% url 'library:review_ticket' post.ticket.id %}" role="button">Créer une critique</a>                        
                 {% endif %}
             </div>
         </div>
