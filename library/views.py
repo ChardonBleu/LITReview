@@ -107,7 +107,6 @@ def review_for_ticket(request, ticket_id) -> HttpResponse:
         HttpResponse -- template: library/review_ticket.html / context: reviewform and related ticket datas
     """
     ticket = Ticket.objects.get(id=ticket_id)
-
     if request.method == "POST":
         review_form = ReviewForm(request.POST)
         if review_form.is_valid():

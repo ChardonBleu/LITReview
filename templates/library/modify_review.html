@@ -10,7 +10,7 @@
 <div class="container">
     
     <h4>Vous êtes en train de poster en réponse à</h4>
-        <div class='container jumbotron'>
+        <div class='container jumbotron pt-3 pb-3'>
             <div class="row">
                 <div class="col">
                     {% if user.get_username == review.ticket.user.username %}
@@ -31,7 +31,7 @@
                     <p>{{review.ticket.description}}</p>
                                     
                     {% if review.ticket.image %}
-                    <p><img src="{{ review.ticket.image.url }}" alt="{{ review.ticket.title }}"></img></p>                                    
+                    <p class="ticket"><img src="{{ review.ticket.image.url }}" alt="{{ review.ticket.title }}"></img></p>                                    
                     {% endif %}                                
                 </div>
             </div>
@@ -51,13 +51,13 @@
                 {{ form.non_field_errors }}
             </div>
             <div class="form-group ">
-                {{ form.headline.label }} {{ form.headline.errors }}<br>                   
+                Titre {{ form.headline.errors }}<br>                   
                 {{ form.headline }}
             </div>
             <div class="form-group">
-                {{ form.rating.label}}<br>
+                Note <br>
                 {% for radio in form.rating %}
-                    {% if radio.choice_label > '0' %}
+                    {% if radio.choice_label >= '0' %}
                         <label for="{{ radio.id_for_label }}">
                                     
                         <span class="radio">{{ radio.tag }}</span> -{{ radio.choice_label }}
@@ -66,7 +66,7 @@
                 {% endfor %}
             </div>
             <div class="form-group ">
-                {{ form.body.label }} {{ form.body.errors }}<br>               
+                Commentaire  {{ form.body.errors }}<br>               
                 {{ form.body }}
             </div>
         </div>
