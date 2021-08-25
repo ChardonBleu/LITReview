@@ -28,15 +28,16 @@
                 {{ ticket_form.non_field_errors }}
                 </div>
                 <div class="form-group ">
-                {{ ticket_form.title.label }} {{ ticket_form.title.errors }}       
+                Titre {{ ticket_form.title.errors }}       
                 {{ ticket_form.title }}
                 </div>
                 <div class="form-group ">
-                {{ ticket_form.description.label }} {{ ticket_form.description.errors }}                 
+                Description {{ ticket_form.description.errors }}                 
                 {{ ticket_form.description }}
                 </div>
                 <div class="form-group ">
-                {{ ticket_form.image.lab}}
+                Image {{ ticket_form.image.errors }}<br>
+                {{ ticket_form.image }}
                 </div>
             </div>
         </div>
@@ -54,13 +55,13 @@
                         {{ review_form.non_field_errors }}
                     </div>
                     <div class="form-group ">
-                        {{ review_form.headline.label }} {{ review_form.headline.errors }}<br>                   
+                        Titre {{ review_form.headline.errors }}<br>                   
                         {{ review_form.headline }}
                     </div>
                     <div class="form-group">
-                        {{ review_form.rating.label}}<br>
+                        Note <br>
                         {% for radio in review_form.rating %}
-                            {% if radio.choice_label > '0' %}
+                            {% if radio.choice_label >= '0' %}
                                 <label for="{{ radio.id_for_label }}">
                                     
                                 <span class="radio">{{ radio.tag }}</span> -{{ radio.choice_label }}
@@ -69,7 +70,7 @@
                         {% endfor %}
                     </div>
                     <div class="form-group ">
-                        {{ review_form.body.label }} {{ review_form.body.errors }}<br>               
+                        Commentaire {{ review_form.body.errors }}<br>               
                         {{ review_form.body }}
                     </div>
                 </div>

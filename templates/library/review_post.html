@@ -12,6 +12,8 @@
                                  <span class={% if post.rating >= 3 %} "bi bi-star-fill checked" {% else %} "bi bi-star-fill" {% endif %}></span>
                                  <span class={% if post.rating >= 4 %} "bi bi-star-fill checked" {% else %} "bi bi-star-fill" {% endif %}></span>
                                  <span class={% if post.rating >= 5 %} "bi bi-star-fill checked" {% else %} "bi bi-star-fill" {% endif %}></span></p>
+    </div>
+    <div class="row">    
         <p>{{ post.body }}</p>
     </div>
 
@@ -25,7 +27,7 @@
         <div class="row">
             <div class="col">
                 {% if post.ticket.image %}
-                    <p><img src="{{ post.ticket.image.url }}" alt="{{ post.ticket.title }}"></p>                      
+                    <p class="ticket"><img src="{{ post.ticket.image.url }}" alt="{{ post.ticket.title }}"></p>                      
                 {% endif %}
             </div>
         </div>

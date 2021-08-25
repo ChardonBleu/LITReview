@@ -1,13 +1,13 @@
-# Gestion de tournois d'échec
+# LITReview
 
 Projet 9 de la formation DA python d'Openclassrooms.
 
-Site web de partage de critiques de livres et textes.
+Site web de partage de critiques de livres ou d'articles.
 
 Installation
 ---
-Télécharger les dossier et fichier et les copier dans un dossier de votre choix
-Dans la console aller dans ce dossier choisi.
+Télécharger les dossiers et fichiers et les copier dans un dossier de votre choix.
+Dans la console aller dans le dossier choisi.
 
 Environnement virtuel
 ---
@@ -28,6 +28,7 @@ sur mac ou linux:
 ```bash 
 source env/bin/activate 
 ```
+
 Packages
 ---
 
@@ -38,7 +39,18 @@ python -m pip -r requirements.txt
 
 Exécution
 ---
-Se mettre dans le répertoire contenant le dossier application et taper dans la console:
+Se mettre dans le répertoire racine.
+Faire les migrations pour l'initialisation de la base de donnée:
+
+```bash 
+python manage.py makemigrations
+```
+puis:
+
+```bash 
+python manage.py migrate
+```
+Puis lancer le serveur:
 
 ```bash 
 python manage.py runserver
@@ -48,7 +60,7 @@ Django version 3.2.5, using settings 'LITReview.settings'
 Starting development server at http://127.0.0.1:8000/
 Quit the server with CTRL-BREAK.
 
-Aller sur le l'adresse http proposée pour consulter le site.
+Aller sur l'adresse http proposée pour consulter le site.
 
 
 Générer un rapport flake-8 html
