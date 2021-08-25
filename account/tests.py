@@ -11,18 +11,22 @@ from .forms import CustomUserCreationForm
 def current_user(db) -> User:
     return User.objects.create_user(username='azalae', password='choucroute')
 
+
 @pytest.fixture
 def client(db) -> Client:
     return Client()
+
 
 @pytest.fixture
 def connect_client(client: Client, current_user: User) -> Client:
     client.login(username='azalae', password='choucroute')
     return client, current_user
 
+
 @pytest.fixture
 def test_password() -> str:
     return 'test-pass'
+
 
 @pytest.fixture
 def create_user(db, django_user_model, test_password):
@@ -32,6 +36,7 @@ def create_user(db, django_user_model, test_password):
             kwargs['username'] = str(uuid.uuid4())
         return django_user_model.objects.create_user(**kwargs)
     return make_user
+
 
 @pytest.fixture
 def auto_login_user(db, client, create_user, test_password):
@@ -44,6 +49,7 @@ def auto_login_user(db, client, create_user, test_password):
 
 # ################################################################# #
 # ############################ TEST URLS ########################## #
+
 
 def test_urls(client: Client) -> None:
     """[summary]
@@ -60,13 +66,16 @@ def test_urls(client: Client) -> None:
 # ################################################################# #
 # ######################### TEST connexion ############# ########## #
 
+
 def test_unauthorized_user_on_admin(client: Client) -> None:
     response = client.get('/admin/')
     assert response.status_code == 302
 
+
 def test_superuser_on_admin(admin_client) -> None:
     response = admin_client.get('/admin/')
     assert response.status_code == 200
+
 
 def test_auth_view(db, auto_login_user: Client) -> None:
     client, user = auto_login_user(db)
@@ -77,6 +86,7 @@ def test_auth_view(db, auto_login_user: Client) -> None:
 # ################################################################# #
 # ####################### TEST registration ####################### #
 
+
 def test_registration(db, client: Client) -> None:
     user_count = User.objects.count()
     response = client.post(reverse('account:register'), data={
@@ -86,6 +96,7 @@ def test_registration(db, client: Client) -> None:
     assert response.status_code == 302
     assert User.objects.count() == user_count + 1
 
+
 def test_invalid_form(db) -> None:
     form_data = {
         'username': 'azalae',
@@ -93,6 +104,7 @@ def test_invalid_form(db) -> None:
         'password2': ' '}
     form = CustomUserCreationForm(data=form_data)
     assert not form.is_valid()
+
 
 def test_response_invalid(client: Client) -> None:
     response = client.post(reverse('account:register'), data={

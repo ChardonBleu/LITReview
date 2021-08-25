@@ -5,8 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.urls.base import reverse, reverse_lazy
-from django.utils.functional import lazy
+from django.urls.base import reverse_lazy
 
 from django.views.generic.edit import CreateView, DeleteView
 
@@ -37,6 +36,7 @@ def flow(request) -> HttpResponse:
 
     return render(request, 'library/flow.html', context)
 
+
 @login_required(login_url='/')
 def ticket_creation(request) -> HttpResponse:
     """Creation of a new ticket
@@ -60,6 +60,7 @@ def ticket_creation(request) -> HttpResponse:
     else:
         form = TicketForm()
     return render(request, 'library/ticket.html', context={"form": form})
+
 
 @login_required(login_url='/')
 def review_creation(request) -> HttpResponse:
@@ -93,6 +94,7 @@ def review_creation(request) -> HttpResponse:
     context = {"review_form": review_form, "ticket_form": ticket_form}
     return render(request, 'library/review.html', context=context)
 
+
 @login_required(login_url='/')
 def review_for_ticket(request, ticket_id) -> HttpResponse:
     """new review for an existing ticket
@@ -122,6 +124,7 @@ def review_for_ticket(request, ticket_id) -> HttpResponse:
     context = {"review_form": review_form, "ticket": ticket}
     return render(request, 'library/review_ticket.html', context=context)
 
+
 @login_required(login_url='/')
 def posts(request) -> HttpResponse:
     """user's tickets an reviews
@@ -141,6 +144,7 @@ def posts(request) -> HttpResponse:
     context = {'posts': posts}
 
     return render(request, 'library/posts.html', context)
+
 
 @login_required(login_url='/')
 def post_modification_ticket(request, ticket_id) -> HttpResponse:
@@ -175,6 +179,7 @@ def post_modification_ticket(request, ticket_id) -> HttpResponse:
     context = {"form": form, "ticket": ticket}
     return render(request, 'library/modify_ticket.html', context=context)
 
+
 @login_required(login_url='/')
 def ticket_deletion(request, ticket_id) -> HttpResponse:
     """user's ticket deletion
@@ -194,6 +199,7 @@ def ticket_deletion(request, ticket_id) -> HttpResponse:
         Ticket.objects.filter(id=ticket_id).delete()
     return redirect('library:posts')
 
+
 @login_required(login_url='/')
 def review_deletion(request, review_id) -> HttpResponse:
     """user's review deletion
@@ -212,6 +218,7 @@ def review_deletion(request, review_id) -> HttpResponse:
     else:
         Review.objects.filter(id=review_id).delete()
     return redirect('library:posts')
+
 
 @login_required(login_url='/')
 def post_modification_review(request, review_id) -> HttpResponse:
@@ -272,7 +279,7 @@ class FollowingView(LoginRequiredMixin, CreateView):
         If the form is valid, redirect to the supplied URL:
         A user can't follow himself and a user can't aks following someone he's yet following
         """
-        context = self.get_context_data(**kwargs)
+
         object = form.save(commit=False)
         object.user = self.request.user
         if object.followed_user == self.request.user:

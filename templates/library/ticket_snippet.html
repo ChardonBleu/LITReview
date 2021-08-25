@@ -1,5 +1,5 @@
     <div class="row">
-        <div class="col">
+        <div class="col-8">
             {% if user.get_username == post.user.username %}
                 <h3>Vous avez 
             {% else %}
@@ -7,8 +7,8 @@
             {% endif %}
             demandé une critique</h3>
         </div>
-        <div class="col">
-            {{ post.datetime_created|time:"H:i" }} {{ post.datetime_created|date:"d F Y" }}
+        <div class="col-4 text-right">
+            {{ post.datetime_created|time:"H:i" }} - {{ post.datetime_created|date:"d F Y" }}
         </div>
     </div>
 

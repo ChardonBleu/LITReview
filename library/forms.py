@@ -2,6 +2,7 @@ from django import forms
 from django.forms.widgets import RadioSelect
 from .models import Ticket, Review
 
+
 class TicketForm(forms.ModelForm):
     """Used for ticket creation or modification
     Only title is required.
@@ -12,6 +13,7 @@ class TicketForm(forms.ModelForm):
         fields = ['title',
                   'description',
                   'image']
+
 
 class ReviewForm(forms.ModelForm):
     """Used for review creation or modification
