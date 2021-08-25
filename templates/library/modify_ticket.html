@@ -20,16 +20,16 @@
 
                     <p>{{ form.non_field_errors }}</p>
 
-                    <p>{{ form.title.label }} {{ form.title.errors }}</p>                    
+                    <p>Titre  {{ form.title.errors }}</p>                    
                     <p>{{ form.title }}</p>
 
-                    <p>{{ form.description.label }} {{ form.description.errors }}</p>                    
+                    <p>Description {{ form.description.errors }}</p>                    
                     <p>{{ form.description }}</p>
 
 
-                    <p>{{ form.image.label }} {{ form.image.errors }}</p>
+                    <p>Image {{ form.image.errors }}</p>
                         {% if ticket.image %}
-                            <p><img src="{{ ticket.image.url }}" alt="{{ ticket.title }}"></img></p>                               
+                            <p class="ticket"><img src="{{ ticket.image.url }}" alt="{{ ticket.title }}"></img></p>                               
                         {% endif %}
                     <p>{{ form.image }}</p>
     </div>
