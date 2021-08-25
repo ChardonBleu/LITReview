@@ -2,8 +2,8 @@
         <div class="col">
             <h3> Vous avez publié une critique </h3>
         </div>
-        <div class="col">
-            {{ post.datetime_created|time:"H:i" }} {{ post.datetime_created|date:"d F Y" }}
+        <div class="col text-right">
+            {{ post.datetime_created|time:"H:i" }} - {{ post.datetime_created|date:"d F Y" }}
         </div>
     </div>
     <div class="row">
@@ -15,7 +15,7 @@
         <p>{{ post.body }}</p>
     </div>
 
-    <div class="container jumbotron">
+    <div class="container jumbotron pt-3 pb-3">
         <div class="row">
             <p>Ticket - {{ post.ticket.user.username }}</p>
         </div>

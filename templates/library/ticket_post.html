@@ -2,8 +2,8 @@
         <div class="col">
             <h3> Vous avez publié un ticket </h3>
         </div>
-        <div class="col">
-            {{ post.datetime_created|time:"H:i" }} {{ post.datetime_created|date:"d F Y" }}
+        <div class="col text-right">
+            {{ post.datetime_created|time:"H:i" }} - {{ post.datetime_created|date:"d F Y" }}
         </div>
     </div>
 

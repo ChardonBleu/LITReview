@@ -9,14 +9,14 @@
             <div class="col-12 col-md-6 text-center">                   
                     <form method="POST">
                         {% csrf_token %}
-                        <p>Bienvenue. Connectez-vous<p>
+                        <h4>Bienvenue. Connectez-vous</h4>
                         {{ form.as_p }}
                         <input class="btn btn-success" type="submit" value="Se connecter">
                     </form>
             </div>
 
             <div class="col-12 col-md-6 text-center">
-                <p>Inscrivez-vous maintenant</p>
+                <h4>Inscrivez-vous maintenant</h4>
                 <a class="btn btn-success" href="{% url 'account:register' %}" role="button">S'inscrire</a>
             </div>            
             
