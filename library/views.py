@@ -17,14 +17,17 @@ from .forms import TicketForm, ReviewForm
 def flow(request) -> HttpResponse:
     """group all tickets and  review for flow:
     Users can see the tickets and reviews of all users they follow.
-    They should also see their own tickets and reviews, as well as any reviews in response to their own tickets
+    They should also see their own tickets and reviews, as well as any reviews
+    in response to their own tickets
     even if they do not follow the reviewer.
 
     Arguments:
-        request {HttpRequest} --  HttpRequest object that contains metadata about the request
+        request {HttpRequest} --  HttpRequest object that contains metadata
+        about the request
 
     Returns:
-        HttpResponse -- template: library/flow.html / context: result of query on tickets and reviews
+        HttpResponse -- template: library/flow.html / context: result of query
+        on tickets and reviews
     """
     tickets = Ticket.objects.get_users_viewable_tickets(request)
     reviews = Review.objects.get_users_viewable_reviews(request)
@@ -42,7 +45,8 @@ def ticket_creation(request) -> HttpResponse:
     """Creation of a new ticket
 
     Arguments:
-        request {HttpRequest} --  HttpRequest object that contains metadata about the request
+        request {HttpRequest} --  HttpRequest object that contains metadata
+        about the request
 
     Returns:
         HttpResponse -- template: library/ticket.html / context: ticketform
@@ -67,7 +71,8 @@ def review_creation(request) -> HttpResponse:
     """creation of a new review
 
     Arguments:
-        request {HttpRequest} --  HttpRequest object that contains metadata about the request
+        request {HttpRequest} --  HttpRequest object that contains metadata
+        about the request
 
     Returns:
         HttpResponse -- template: library/review.html / context: reviewform
@@ -101,11 +106,13 @@ def review_for_ticket(request, ticket_id) -> HttpResponse:
     """new review for an existing ticket
 
     Arguments:
-        request {HttpRequest} --  HttpRequest object that contains metadata about the request
+        request {HttpRequest} --  HttpRequest object that contains metadata
+        about the request
         ticket_id {int} -- ticket id related to new review
 
     Returns:
-        HttpResponse -- template: library/review_ticket.html / context: reviewform and related ticket datas
+        HttpResponse -- template: library/review_ticket.html / context:
+        reviewform and related ticket datas
     """
     ticket = Ticket.objects.get(id=ticket_id)
     if request.method == "POST":
@@ -132,10 +139,12 @@ def posts(request) -> HttpResponse:
     """user's tickets an reviews
 
     Arguments:
-        request {HttpRequest} --  HttpRequest object that contains metadata about the request
+        request {HttpRequest} --  HttpRequest object that contains metadata
+        about the request
 
     Returns:
-        HttpResponse -- template: library/posts.html / context: user's tickets an reviews
+        HttpResponse -- template: library/posts.html / context: user's tickets
+        an reviews
     """
     tickets = Ticket.objects.get_own_tickets(request)
     reviews = Review.objects.get_own_reviews(request)
@@ -153,16 +162,19 @@ def post_modification_ticket(request, ticket_id) -> HttpResponse:
     """user's modifiation ticket
 
     Arguments:
-        request {HttpRequest} --  HttpRequest object that contains metadata about the request
+        request {HttpRequest} --  HttpRequest object that contains metadata
+        about the request
         ticket_id {int} -- ticket id for modification
 
     Returns:
-        HttpResponse -- template: library/modify_ticket.html / context : ticketform and non modified ticket datas
+        HttpResponse -- template: library/modify_ticket.html / context :
+        ticketform and non modified ticket datas
     """
     ticket = Ticket.objects.get(id=ticket_id)
     if ticket.user != request.user:
-        return HttpResponse("Vous ne pouvez modifier un ticket dont vous n'êtes pas l'auteur.<br>\
-<a href='../../../posts/'>Retour</a>")
+        return HttpResponse(
+            "Vous ne pouvez modifier un ticket dont " +
+            "vous n'êtes pas l'auteur.<a href='../../../posts/'>Retour</a>")
     if request.method == "POST":
         form = TicketForm(request.POST, request.FILES, instance=ticket)
         if form.is_valid():
@@ -187,7 +199,8 @@ def ticket_deletion(request, ticket_id) -> HttpResponse:
     """user's ticket deletion
 
     Arguments:
-        request {HttpRequest} -- HttpRequest object that contains metadata about the request
+        request {HttpRequest} -- HttpRequest object that contains metadata
+        about the request
         ticket_id {int} -- ticket id for deletion
 
     Returns:
@@ -195,8 +208,10 @@ def ticket_deletion(request, ticket_id) -> HttpResponse:
     """
     ticket = Ticket.objects.get(id=ticket_id)
     if ticket.user != request.user:
-        return HttpResponse("Vous ne pouvez supprimer un ticket dont vous n'êtes pas l'auteur.<br>\
-<a href='../../../posts/'>Retour</a>")
+        return HttpResponse(
+            "Vous ne pouvez supprimer un ticket dont " +
+            "vous n'êtes pas l'auteur.<a href='../../../posts/'>Retour</a>")
+
     else:
         Ticket.objects.filter(id=ticket_id).delete()
     return redirect('library:posts')
@@ -207,7 +222,8 @@ def review_deletion(request, review_id) -> HttpResponse:
     """user's review deletion
 
     Arguments:
-        request {HttpRequest} -- HttpRequest object that contains metadata about the request
+        request {HttpRequest} -- HttpRequest object that contains metadata
+        about the request
         review_id {int} -- review id for deletion
 
     Returns:
@@ -215,8 +231,10 @@ def review_deletion(request, review_id) -> HttpResponse:
     """
     review = Review.objects.get(id=review_id)
     if review.user != request.user:
-        return HttpResponse("Vous ne pouvez supprimer une critique dont vous n'êtes pas l'auteur.<br>\
-<a href='../../../posts/'>Retour</a>")
+        return HttpResponse(
+            "Vous ne pouvez supprimer une critique " +
+            "dont vous n'êtes pas l'auteur.<br>" +
+            "<a href='../../../posts/'>Retour</a>")
     else:
         Review.objects.filter(id=review_id).delete()
     return redirect('library:posts')
@@ -227,16 +245,20 @@ def post_modification_review(request, review_id) -> HttpResponse:
     """user's modifiation review
 
     Arguments:
-        request {HttpRequest} --  HttpRequest object that contains metadata about the request
+        request {HttpRequest} --  HttpRequest object that contains metadata
+        about the request
         review_id {int} -- review id for modification
 
     Returns:
-        HttpResponse -- template: library/modify_review.html / context : reviewform and non modified review datas
+        HttpResponse -- template: library/modify_review.html / context :
+        reviewform and non modified review datas
     """
     review = Review.objects.get(id=review_id)
     if review.user != request.user:
-        return HttpResponse("Vous ne pouvez modifier une critique dont vous n'êtes pas l'auteur.<br>\
-<a href='../../../posts/'>Retour</a>")
+        return HttpResponse(
+            "Vous ne pouvez modifier une critique dont " +
+            "vous n'êtes pas l'auteur.<a href='../../../posts/'>Retour</a>")
+
     if request.method == "POST":
         form = ReviewForm(request.POST, instance=review)
         if form.is_valid():
@@ -272,23 +294,31 @@ class FollowingView(LoginRequiredMixin, CreateView):
             Dict -- subscriptions and following users
         """
         context = super().get_context_data(**kwargs)
-        context['subscriptions'] = UserFollows.objects.get_users_subscriptions(self.request)
-        context['followers'] = UserFollows.objects.get_users_followers(self.request)
+        context['subscriptions'] = UserFollows.objects.get_users_subscriptions(
+            self.request)
+        context['followers'] = UserFollows.objects.get_users_followers(
+            self.request)
         return context
 
     def form_valid(self, form, **kwargs) -> HttpResponse:
         """
         If the form is valid, redirect to the supplied URL:
-        A user can't follow himself and a user can't aks following someone he's yet following
+        A user can't follow himself and a user can't aks following someone
+        he's yet following
         """
 
         object = form.save(commit=False)
         object.user = self.request.user
         if object.followed_user == self.request.user:
-            return HttpResponse("Vous ne pouvez pas vous suivre vous même.<br>\
-<a href='../../../following/'>Retour</a>")
-        if UserFollows.objects.filter(user=self.request.user, followed_user=object.followed_user):
-            return HttpResponse("Vous suivez déjà cet utilisateur.<br><a href='../../../following/'>Retour</a>")
+            return HttpResponse(
+                "Vous ne pouvez pas vous suivre vous " +
+                "même.<br><a href='../../../following/'>Retour</a>")
+        if UserFollows.objects.filter(user=self.request.user,
+                                      followed_user=object.followed_user):
+            return HttpResponse(
+                "Vous suivez déjà cet " +
+                "utilisateur.<br><a href='../../../following/'>Retour</a>"
+                )
         else:
             self.object = object.save()
             return super().form_valid(form)
@@ -302,11 +332,15 @@ class SubscriptionDeletionView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('library:following')
 
     def delete(self, request, *args, **kwargs):
-        """A user can't delete a subscription if he's not the authenticated user.
+        """A user can't delete a subscription if he's not the authenticated
+        user.
         """
         self.object = self.get_object()
         if self.object.user != request.user:
-            return HttpResponse("Vous ne pouvez pas supprimer un utilisateur que vous ne suivez pas.<br>\
-<a href='../../../following/'>Retour</a>")
+            return HttpResponse(
+                "Vous ne pouvez pas supprimer" +
+                " un utilisateur que vous ne suivez pas.<br>" +
+                "<a href='../../../following/'>Retour</a>"
+                )
         else:
             return super().delete(request, *args, **kwargs)

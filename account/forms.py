@@ -19,18 +19,21 @@ class CustomUserCreationForm(UserCreationForm):
         super().__init__(*args, **kwargs)
         self.fields['username'].label = ""
         self.fields['username'].help_text = ""
-        self.fields['username'].widget.attrs.update({'autofocus': True,
-                                                     'placeholder': 'Utilisateur'})
+        self.fields['username'].widget.attrs.update(
+            {'autofocus': True,
+             'placeholder': 'Utilisateur'})
 
         self.fields['password1'].label = ""
         self.fields['password1'].help_text = ""
-        self.fields['password1'].widget.attrs.update({'autocomplete': 'new-password',
-                                                      'placeholder': 'Mot de passe'})
+        self.fields['password1'].widget.attrs.update(
+            {'autocomplete': 'new-password',
+             'placeholder': 'Mot de passe'})
 
         self.fields['password2'].label = ""
         self.fields['password2'].help_text = ""
-        self.fields['password2'].widget.attrs.update({'autocomplete': 'new-password',
-                                                     'placeholder': 'Confirmer mot de passe'})
+        self.fields['password2'].widget.attrs.update(
+            {'autocomplete': 'new-password',
+             'placeholder': 'Confirmer mot de passe'})
 
 
 class CustomAuthenticationForm(AuthenticationForm):
@@ -42,10 +45,12 @@ class CustomAuthenticationForm(AuthenticationForm):
         super().__init__(*args, **kwargs)
         self.fields['username'].label = ""
         self.fields['username'].help_text = ""
-        self.fields['username'].widget.attrs.update({'autofocus': True,
-                                                     'placeholder': 'Utilisateur'})
+        self.fields['username'].widget.attrs.update(
+            {'autofocus': True,
+             'placeholder': 'Utilisateur'})
 
         self.fields['password'].label = ""
         self.fields['password'].help_text = ""
-        self.fields['password'].widget.attrs.update({'autocomplete': 'new-password',
-                                                     'placeholder': 'Mot de passe'})
+        self.fields['password'].widget.attrs.update(
+            {'autocomplete': 'new-password',
+             'placeholder': 'Mot de passe'})

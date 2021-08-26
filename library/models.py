@@ -16,10 +16,13 @@ class TicketManager(models.Manager):
             [iterable object] -- regroup all query results in one single list
         """
         tickets_user = self.filter(user=request.user)
-        tickets_user = tickets_user.annotate(content_type=Value('TICKET', CharField()))
+        tickets_user = tickets_user.annotate(content_type=Value('TICKET',
+                                                                CharField()))
 
-        tickets_followed_user = self.filter(user__followed_by__user=request.user)
-        tickets_followed_user = tickets_followed_user.annotate(content_type=Value('TICKET', CharField()))
+        tickets_followed_user = self.filter(
+            user__followed_by__user=request.user)
+        tickets_followed_user = tickets_followed_user.annotate(
+            content_type=Value('TICKET', CharField()))
         tickets = sorted(chain(tickets_user, tickets_followed_user),
                          key=lambda post: post.datetime_created,
                          reverse=True)
@@ -32,7 +35,8 @@ class TicketManager(models.Manager):
             [iterable object] -- regroup all query results in one single list
         """
         tickets_user = self.filter(user=request.user)
-        tickets_user = tickets_user.annotate(content_type=Value('TICKET', CharField()))
+        tickets_user = tickets_user.annotate(content_type=Value('TICKET',
+                                                                CharField()))
         return tickets_user
 
 
@@ -42,7 +46,7 @@ class Ticket(models.Model):
 
     title = models.CharField(
         max_length=128,
-        help_text=_("Each ticket has a title wich is the book title and author"))
+        help_text=_("Each ticket has a title wich is book title and author"))
     description = models.TextField(
         max_length=2048,
         blank=True,
@@ -66,7 +70,7 @@ class Ticket(models.Model):
     related_review = models.BooleanField(
         default=False,
         help_text="True if at least one review exists for this ticket")
-    
+
     related_review_user = models.CharField(
         max_length=128,
         blank=True,
@@ -94,10 +98,13 @@ class ReviewManager(models.Manager):
             [iterable object] -- regroup all query results in one single list
         """
         reviews_user = Review.objects.filter(user=request.user)
-        reviews_user = reviews_user.annotate(content_type=Value('REVIEW', CharField()))
+        reviews_user = reviews_user.annotate(content_type=Value('REVIEW',
+                                                                CharField()))
 
-        reviews_followed_user = Review.objects.filter(user__followed_by__user=request.user)
-        reviews_followed_user = reviews_followed_user.annotate(content_type=Value('REVIEW', CharField()))
+        reviews_followed_user = Review.objects.filter(
+            user__followed_by__user=request.user)
+        reviews_followed_user = reviews_followed_user.annotate(
+            content_type=Value('REVIEW', CharField()))
         reviews = sorted(chain(reviews_user, reviews_followed_user),
                          key=lambda post: post.datetime_created,
                          reverse=True)
@@ -110,7 +117,8 @@ class ReviewManager(models.Manager):
             [iterable object] -- regroup all query results in one single list
         """
         reviews_user = Review.objects.filter(user=request.user)
-        reviews_user = reviews_user.annotate(content_type=Value('REVIEW', CharField()))
+        reviews_user = reviews_user.annotate(content_type=Value('REVIEW',
+                                                                CharField()))
 
         return reviews_user
 
@@ -133,17 +141,18 @@ class Review(models.Model):
     ticket = models.ForeignKey(
         to=Ticket,
         on_delete=models.CASCADE,
-        help_text=_("Each review is related to a Ticket describing a book or an article.\
-            If a the related ticket is deleted, the review is deleted."),
+        help_text=_("Each review is related to Ticket describing a book or an\
+            article.If the related ticket is deleted, the review is deleted."),
         related_name='ticket')
     rating = models.PositiveSmallIntegerField(
         # validates that rating must be between 0 and 5
         validators=[MinValueValidator(0), MaxValueValidator(5)],
         choices=RATING_CHOICES,
-        help_text=_("Each review has a rating wich is an integer number between 0 and 5."))
+        help_text=_("Each review has rating wich is an integer number between\
+            0 and 5."))
     headline = models.CharField(
         max_length=128,
-        help_text=_("The headline can't be blank. Headline max length is 128."))
+        help_text=_("The headline can't be blank. Headline max length 128."))
     body = models.TextField(
         max_length=8192,
         blank=True,
@@ -170,7 +179,8 @@ class Review(models.Model):
             [string] -- review title, creation date and related ticket id
         """
 
-        return f"{self.headline} - by {self.user} - related to ticket {self.ticket.title}"
+        return f"{self.headline} - by {self.user} - " +\
+            f"related to ticket {self.ticket.title}"
 
 
 class UserFollowsManager(models.Manager):
@@ -226,4 +236,5 @@ class UserFollows(models.Model):
         Returns:
             [string] -- user1 follows user2
         """
-        return f"{self.user.username.upper()} follows {self.followed_user.username.upper()}"
+        return f"{self.user.username.upper()} follows " +\
+            f"{self.followed_user.username.upper()}"

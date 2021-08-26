@@ -26,5 +26,6 @@ class ReviewForm(forms.ModelForm):
                   'body',
                   'rating']
         widgets = {
-            'rating': RadioSelect(attrs={'class': ' form-check form-check-inline'}),
+            'rating': RadioSelect(attrs={
+                'class': ' form-check form-check-inline'}),
         }
