@@ -80,6 +80,7 @@ def review_creation(request) -> HttpResponse:
             ticket = ticket_form.save(commit=False)
             ticket.user = request.user
             ticket.related_review = True
+            ticket.related_review_user = request.user.username
             ticket.save()
             review = review_form.save(commit=False)
             review.user = request.user
@@ -113,6 +114,8 @@ def review_for_ticket(request, ticket_id) -> HttpResponse:
             review = review_form.save(commit=False)
             review.user = request.user
             ticket.related_review = True
+            ticket.related_review_user = request.user.username
+            ticket.save()
             review.ticket = ticket
             review.save()
             return redirect('library:flow')

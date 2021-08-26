@@ -27,7 +27,7 @@
 
     <div class="row">
         <div class="col text-right">
-            {% if post.related_review == False %}            
+            {% if post.related_review == False and post.related_review_user != user%}            
                 <a class="btn btn-success" href="{% url 'library:review_ticket' post.id %}" rone="button">Créer une critique</a>
             {% endif %}
         </div>

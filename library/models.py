@@ -66,6 +66,11 @@ class Ticket(models.Model):
     related_review = models.BooleanField(
         default=False,
         help_text="True if at least one review exists for this ticket")
+    
+    related_review_user = models.CharField(
+        max_length=128,
+        blank=True,
+        help_text=_("user who has created a review for this ticket"))
 
     objects = TicketManager()
 
