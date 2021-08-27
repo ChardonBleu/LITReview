@@ -34,7 +34,7 @@ Packages
 
 Puis installer les modules necessaires:
 ```bash 
-python -m pip -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
 Exécution
@@ -56,6 +56,7 @@ Puis lancer le serveur:
 python manage.py runserver
 ```
 Le serveur de développement se lance et son adresse s'affiche dans la console:
+
 Django version 3.2.5, using settings 'LITReview.settings'
 Starting development server at http://127.0.0.1:8000/
 Quit the server with CTRL-BREAK.
@@ -98,29 +99,30 @@ Ressources utilisées
 ---
 
 Livres:
+
     Django 3 by exemples - Antonio Melé
 
 Ressources web:
 
-    Les webinaires Django d'Aurélien Massé:
+Les webinaires Django d'Aurélien Massé:
 
     https://register.gotowebinar.com/recording/viewRecording/1222617758068117773/3364927104570569231/mentor@chappuis.net?registrantKey=4040626477816493579&type=ABSENTEEEMAILRECORDINGLINK
 
     https://register.gotowebinar.com/recording/viewRecording/3524698239153452814/9120062335571565067/mentor@chappuis.net?registrantKey=4082015394508660237&type=ABSENTEEEMAILRECORDINGLINK
 
-    La documentation officielle de Django:
+La documentation officielle de Django:
 
     https://docs.djangoproject.com/en/3.0/
 
-    Les tutos de Tibault Houdon et son excellent site Docstring:
+Les tutos de Tibault Houdon et son excellent site Docstring:
 
     https://www.docstring.fr/
 
-    Le cours Boostrap d'Openclassrooms:
+Le cours Boostrap d'Openclassrooms:
 
     https://openclassrooms.com/fr/courses/6391096-creez-des-sites-web-responsive-avec-bootstrap-4
 
-    La documentation officielle de Bootstrap:
+La documentation officielle de Bootstrap:
 
     https://getbootstrap.com/docs/4.3/getting-started/introduction/
 
