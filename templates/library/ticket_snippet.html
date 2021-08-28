@@ -25,10 +25,10 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row pt-3">
         <div class="col text-right">
-            {% if post.related_review == False and post.related_review_user != user%}            
-                <a class="btn btn-success" href="{% url 'library:review_ticket' post.id %}" rone="button">Créer une critique</a>
+            {% if post.related_review == False or post.related_review_user == post.user.username %}            
+               <p> <a class="btn btn-success" href="{% url 'library:review_ticket' post.id %}" rone="button">Créer une critique</a></p>
             {% endif %}
         </div>
     </div>
