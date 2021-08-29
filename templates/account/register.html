@@ -3,9 +3,9 @@
 <div class="container jumbotron w-75 custom-jumbo">
     <div class="row">
         <div class="col text-center">
-            <form method="POST">
+            <form method="POST" >
                 {% csrf_token %}
-                <div>
+                <div class="form-group text-center">
                     <h4>Inscrivez-vous:</h4>
                     {{ form.as_p }}
                 </div>

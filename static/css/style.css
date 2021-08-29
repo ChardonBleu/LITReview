@@ -7,6 +7,10 @@ select {
     height: 40px;
 }
 
+.account input {
+    text-align: center;
+}
+
 .ticket img{
     max-width: 300px;
     max-height: 300px;
