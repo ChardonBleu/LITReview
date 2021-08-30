@@ -1,5 +1,6 @@
 from itertools import chain
 from typing import Dict
+from django.db.models.query import QuerySet
 from django.http.response import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -10,7 +11,7 @@ from django.urls.base import reverse_lazy
 from django.views.generic.edit import CreateView, DeleteView
 
 from .models import Review, Ticket, UserFollows
-from .forms import TicketForm, ReviewForm
+from .forms import TicketForm, ReviewForm, FollowedForm
 
 
 @login_required(login_url='/')
@@ -283,8 +284,18 @@ class FollowingView(LoginRequiredMixin, CreateView):
     List of following users.
     """
     model = UserFollows
-    fields = ['followed_user']
     success_url = reverse_lazy('library:following')
+    form_class = FollowedForm
+
+    def get_form_kwargs(self):
+        """To exclude authenticated user from form choice list 
+
+        Returns:
+            [dict] -- 
+        """
+        kwargs = super(FollowingView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user.username
+        return kwargs
 
     def get_context_data(self, **kwargs) -> Dict:
         """generic Create view has creat form in charge.
@@ -294,6 +305,7 @@ class FollowingView(LoginRequiredMixin, CreateView):
             Dict -- subscriptions and following users
         """
         context = super().get_context_data(**kwargs)
+        context['form']
         context['subscriptions'] = UserFollows.objects.get_users_subscriptions(
             self.request)
         context['followers'] = UserFollows.objects.get_users_followers(
