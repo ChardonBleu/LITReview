@@ -321,10 +321,6 @@ class FollowingView(LoginRequiredMixin, CreateView):
 
         object = form.save(commit=False)
         object.user = self.request.user
-        if object.followed_user == self.request.user:
-            return HttpResponse(
-                "Vous ne pouvez pas vous suivre vous " +
-                "même.<br><a href='../../../following/'>Retour</a>")
         if UserFollows.objects.filter(user=self.request.user,
                                       followed_user=object.followed_user):
             return HttpResponse(
