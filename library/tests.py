@@ -394,17 +394,6 @@ def test_userfollows_creation(connect_client: Client, other_user: User,
     assert UserFollows.objects.count() == userfollows_count + 1
 
 
-def test_userfollows_creation_error_oneself(connect_client: Client,
-                                            other_user: User,
-                                            third_user: User) -> None:
-    connected_client, connected_user = connect_client
-    response = connected_client.post(reverse('library:following'),
-                                     data={'followed_user': 1,
-                                           'user': connected_user})
-    assert response.content == b"Vous ne pouvez pas vous suivre vous " +\
-        b"m\xc3\xaame.<br><a href='../../../following/'>Retour</a>"
-
-
 def test_userfollows_error_yetfollowed(connect_client: Client,
                                        user_follows_other_user: UserFollows,
                                        other_user: User) -> None:

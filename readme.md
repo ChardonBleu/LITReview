@@ -66,6 +66,11 @@ Aller sur l'adresse http proposée pour consulter le site.
 
 Générer un rapport flake-8 html
 ---
+Documentations flake8 et flake8 html:
+
+    https://flake8.pycqa.org/en/latest/manpage.html
+
+    https://pypi.org/project/flake8-html/
 
 Se mettre dans le répertoire dont on veut scanner les fichiers *.py. Par exemple pour library:
 ```bash 
@@ -81,6 +86,12 @@ Changer de répertoire pour tester d'autres fichiers *.py
 
 Lancer les tests
 ---
+
+Documentation pytest et coverage:
+
+    https://docs.pytest.org/en/6.2.x/
+
+    https://coverage.readthedocs.io/en/coverage-5.5/
 
 Le fichier pytest.ini a été configuré pour exécuter coverage en même temps que pytest:
 ```bash 
