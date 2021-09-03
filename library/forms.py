@@ -31,17 +31,18 @@ class ReviewForm(forms.ModelForm):
                 'class': ' form-check form-check-inline'}),
         }
 
+
 class FollowedForm(forms.ModelForm):
     """used to add followers subscriptions
     exclusion of authenticated user un form list
-    
+
     """
     class Meta:
         model = UserFollows
         fields = ['followed_user']
-        
+
     def __init__(self, *args, **kwargs):
         username = kwargs.pop('user')
         super(FollowedForm, self).__init__(*args, **kwargs)
-        self.fields['followed_user']= forms.ModelChoiceField(queryset=User.objects.all().exclude(username=username))
-    
+        self.fields['followed_user'] = forms.ModelChoiceField(
+            queryset=User.objects.all().exclude(username=username))

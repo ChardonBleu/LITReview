@@ -1,6 +1,5 @@
 from itertools import chain
 from typing import Dict
-from django.db.models.query import QuerySet
 from django.http.response import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -288,10 +287,10 @@ class FollowingView(LoginRequiredMixin, CreateView):
     form_class = FollowedForm
 
     def get_form_kwargs(self):
-        """To exclude authenticated user from form choice list 
+        """To exclude authenticated user from form choice list
 
         Returns:
-            [dict] -- 
+            [dict] --
         """
         kwargs = super(FollowingView, self).get_form_kwargs()
         kwargs['user'] = self.request.user.username
